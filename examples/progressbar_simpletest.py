@@ -26,33 +26,13 @@ progress_bar = ProgressBar(x, y, 200, 30, 1.0)
 # Append progress_bar to the splash group
 splash.append(progress_bar)
 
-progress_bar.progress = 0.75
-
-progress_bar.progress = 0.5
-
-progress_bar.progress = 1.0
-
-
-"""
-print("Progress: 0% -> 100%")
-progress = 0.0
-while progress <= 1.0:
-    print("Progress: {}%".format(progress*100))
-    progress_bar.progress = progress
-    progress+=0.05
-    time.sleep(0.03)
-"""
-
-
-"""
-progress = 1.0
-while progress > 0.0:
-    print("Progress: {}%".format(progress*100))
-    progress_bar.progress = progress
-    progress-=0.1
-    time.sleep(0.01)
-"""
-
+current_progress = 0.0
 while True:
-    pass
+    while current_progress <= 1.0:
+        print("Progress: {}%".format(current_progress*100))
+        progress_bar.progress = current_progress
+        current_progress+=0.05
+        if current_progress >= 1.0:
+            current_progress = 0.0
+        time.sleep(0.01)
 
