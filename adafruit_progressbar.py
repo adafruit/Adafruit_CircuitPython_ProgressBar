@@ -44,7 +44,7 @@ import displayio
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/brentru/Adafruit_CircuitPython_ProgressBar.git"
 
-
+# pylint: disable=too-many-arguments, too-few-public-methods
 class ProgressBar(displayio.TileGrid):
     """A dynamic progress bar widget.
 
@@ -54,15 +54,15 @@ class ProgressBar(displayio.TileGrid):
     :param int height: The height of the progress bar.
     :param float progress: The percentage of the progress bar.
     :param bar_color: The color of the progress bar. Can be a hex
-                                value for color. 
+                                value for color.
     :param int outline_color: The outline of the progress bar. Can be a hex
                             value for color.
     :param int stroke: Used for the outline_color
 
     """
     def __init__(self, x, y, width, height,
-                progress = 0.0, bar_color = 0x00FF00,
-                outline_color = 0xFFFFFF, stroke = 1):
+                 progress=0.0, bar_color=0x00FF00,
+                 outline_color=0xFFFFFF, stroke=1):
         assert isinstance(progress, float), "Progress must be a floating point value."
         self._bitmap = displayio.Bitmap(width, height, 3)
         self._palette = displayio.Palette(3)
@@ -77,10 +77,10 @@ class ProgressBar(displayio.TileGrid):
         self.progress = self._progress_val
 
         # draw outline rectangle
-        for w in range(width):
+        for _w in range(width):
             for line in range(stroke):
-                self._bitmap[w, line] = 1
-                self._bitmap[w, height-1-line] = 1
+                self._bitmap[_w, line] = 1
+                self._bitmap[_w, height-1-line] = 1
         for _h in range(height):
             for line in range(stroke):
                 self._bitmap[line, _h] = 1
@@ -94,7 +94,7 @@ class ProgressBar(displayio.TileGrid):
 
         """
         return self._progress_val
-    
+
     @progress.setter
     def progress(self, value):
         """Draws the progress bar
@@ -105,12 +105,12 @@ class ProgressBar(displayio.TileGrid):
         assert isinstance(value, float), "Progress value must be a floating point value."
         if self._progress_val > value:
             # bar colorized up to this position, unfill difference
-            for x in range(int(value*self._width+2), self._width*self._progress_val-2):
-                for y in range(2, self._height-2):
-                    self._bitmap[x, y] = 0
+            for _w in range(int(value*self._width+2), self._width*self._progress_val-2):
+                for _h in range(2, self._height-2):
+                    self._bitmap[_w, _h] = 0
         else:
             # fully fill progress bar color
-            for x in range(2, self._width*value-2):
-                for y in range(2, self._height-2):
-                    self._bitmap[x, y] = 2
+            for _w in range(2, self._width*value-2):
+                for _h in range(2, self._height-2):
+                    self._bitmap[_w, _h] = 2
         self._progress_val = value
