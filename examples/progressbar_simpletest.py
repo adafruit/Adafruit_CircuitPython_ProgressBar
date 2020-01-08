@@ -35,4 +35,3 @@ while True:
         if current_progress >= 1.0:
             current_progress = 0.0
         time.sleep(0.01)
-
