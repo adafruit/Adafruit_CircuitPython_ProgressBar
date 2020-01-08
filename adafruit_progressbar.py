@@ -60,6 +60,7 @@ class ProgressBar(displayio.TileGrid):
     :param int stroke: Used for the outline_color
 
     """
+    #pylint: disable=invalid-name
     def __init__(self, x, y, width, height,
                  progress=0.0, bar_color=0x00FF00,
                  outline_color=0xFFFFFF, stroke=1):
