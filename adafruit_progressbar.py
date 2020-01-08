@@ -118,7 +118,7 @@ class ProgressBar(displayio.TileGrid):
 
     @property
     def fill(self):
-        """The fill of the rectangle. Can be a hex value for a color or ``None`` for
+        """The fill of the progress bar. Can be a hex value for a color or ``None`` for
         transparent.
 
         """
@@ -126,7 +126,7 @@ class ProgressBar(displayio.TileGrid):
 
     @fill.setter
     def fill(self, color):
-        """Sets the fill of the rectangle. Can be a hex value for a color or ``None`` for
+        """Sets the fill of the progress bar. Can be a hex value for a color or ``None`` for
         transparent.
 
         """
