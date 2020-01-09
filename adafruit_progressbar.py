@@ -105,8 +105,8 @@ class ProgressBar(displayio.TileGrid):
         assert value <= 1.0, "Progress value may not be > 100%"
         assert isinstance(value, float), "Progress value must be a floating point value."
         if self._progress_val > value:
-            # bar colorized up to this position, unfill difference
-            for _w in range(int(value*self._width+2), self._width*self._progress_val-2):
+            # uncolorize range from width*value+margin to width-margin
+            for _w in range(int(value*self._width+2), self._width-2):
                 for _h in range(2, self._height-2):
                     self._bitmap[_w, _h] = 0
         else:
@@ -115,3 +115,24 @@ class ProgressBar(displayio.TileGrid):
                 for _h in range(2, self._height-2):
                     self._bitmap[_w, _h] = 2
         self._progress_val = value
+
+    @property
+    def fill(self):
+        """The fill of the progress bar. Can be a hex value for a color or ``None`` for
+        transparent.
+
+        """
+        return self._palette[0]
+
+    @fill.setter
+    def fill(self, color):
+        """Sets the fill of the progress bar. Can be a hex value for a color or ``None`` for
+        transparent.
+
+        """
+        if color is None:
+            self._palette[2] = 0
+            self._palette.make_transparent(0)
+        else:
+            self._palette[2] = color
+            self._palette.make_opaque(0)
