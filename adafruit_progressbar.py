@@ -60,10 +60,19 @@ class ProgressBar(displayio.TileGrid):
     :param int stroke: Used for the outline_color
 
     """
-    #pylint: disable=invalid-name
-    def __init__(self, x, y, width, height,
-                 progress=0.0, bar_color=0x00FF00,
-                 outline_color=0xFFFFFF, stroke=1):
+
+    # pylint: disable=invalid-name
+    def __init__(
+        self,
+        x,
+        y,
+        width,
+        height,
+        progress=0.0,
+        bar_color=0x00FF00,
+        outline_color=0xFFFFFF,
+        stroke=1,
+    ):
         assert isinstance(progress, float), "Progress must be a floating point value."
         self._bitmap = displayio.Bitmap(width, height, 3)
         self._palette = displayio.Palette(3)
@@ -81,11 +90,11 @@ class ProgressBar(displayio.TileGrid):
         for _w in range(width):
             for line in range(stroke):
                 self._bitmap[_w, line] = 1
-                self._bitmap[_w, height-1-line] = 1
+                self._bitmap[_w, height - 1 - line] = 1
         for _h in range(height):
             for line in range(stroke):
                 self._bitmap[line, _h] = 1
-                self._bitmap[width-1-line, _h] = 1
+                self._bitmap[width - 1 - line, _h] = 1
         super().__init__(self._bitmap, pixel_shader=self._palette, x=x, y=y)
 
     @property
@@ -103,16 +112,18 @@ class ProgressBar(displayio.TileGrid):
         :param float value: Progress bar value.
         """
         assert value <= 1.0, "Progress value may not be > 100%"
-        assert isinstance(value, float), "Progress value must be a floating point value."
+        assert isinstance(
+            value, float
+        ), "Progress value must be a floating point value."
         if self._progress_val > value:
             # uncolorize range from width*value+margin to width-margin
-            for _w in range(int(value*self._width+2), self._width-2):
-                for _h in range(2, self._height-2):
+            for _w in range(int(value * self._width + 2), self._width - 2):
+                for _h in range(2, self._height - 2):
                     self._bitmap[_w, _h] = 0
         else:
             # fully fill progress bar color
-            for _w in range(2, self._width*value-2):
-                for _h in range(2, self._height-2):
+            for _w in range(2, self._width * value - 2):
+                for _h in range(2, self._height - 2):
                     self._bitmap[_w, _h] = 2
         self._progress_val = value
 
