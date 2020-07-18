@@ -121,7 +121,6 @@ class ProgressBar(displayio.TileGrid):
             _prev_pixel = max(2, int(self._width * self._progress_val - 2))
             _new_pixel = max(int(self._width * value - 2), 2)
             for _w in range(_prev_pixel, _new_pixel - 1, -1):
-                print("w {}".format(_w))
                 for _h in range(2, self._height - 2):
                     self._bitmap[_w, _h] = 0
         else:
