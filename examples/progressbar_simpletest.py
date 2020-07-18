@@ -27,10 +27,10 @@ splash.append(progress_bar)
 
 current_progress = 0.0
 while True:
-    while current_progress <= 1.0:
-        print("Progress: {}%".format(current_progress * 100))
-        progress_bar.progress = current_progress
-        current_progress += 0.05
-        if current_progress >= 1.0:
-            current_progress = 0.0
-        time.sleep(0.01)
+    for current_progress in range(0, 21):
+        print("Progress: {}%".format(current_progress * 0.05))
+        progress_bar.progress = current_progress * 0.05
+        time.sleep(0.02)
+    time.sleep(0.3)
+    progress_bar.progress = 0.0
+    time.sleep(0.3)
