@@ -40,12 +40,14 @@ Implementation Notes
 
 # imports
 import displayio
+import vectorio
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/brentru/Adafruit_CircuitPython_ProgressBar.git"
 
+
 # pylint: disable=too-many-arguments, too-few-public-methods
-class ProgressBar(displayio.TileGrid):
+class ProgressBar(displayio.Group):
     """A dynamic progress bar widget.
 
     :param int x: The x-position of the top left corner.
@@ -63,18 +65,18 @@ class ProgressBar(displayio.TileGrid):
 
     # pylint: disable=invalid-name
     def __init__(
-        self,
-        x,
-        y,
-        width,
-        height,
-        progress=0.0,
-        bar_color=0x00FF00,
-        outline_color=0xFFFFFF,
-        stroke=1,
+            self,
+            x,
+            y,
+            width,
+            height,
+            progress=0.0,
+            bar_color=0x00FF00,
+            outline_color=0xFFFFFF,
+            stroke=1,
     ):
         assert isinstance(progress, float), "Progress must be a floating point value."
-        self._bitmap = displayio.Bitmap(width, height, 3)
+
         self._palette = displayio.Palette(3)
         self._palette[0] = 0x0
         self._palette[1] = outline_color
@@ -84,9 +86,44 @@ class ProgressBar(displayio.TileGrid):
         self._height = height
 
         self._progress_val = progress
-        self.progress = self._progress_val
 
         # draw outline rectangle
+        _outline_palette = displayio.Palette(2)
+        _outline_palette.make_transparent(0)
+        _outline_palette[1] = self._palette[1]
+
+        self._outline_rect = vectorio.Polygon(
+            points=[(0, 0), (self._width, 0), (self._width, self._height), (0, self._height)])
+        self._outline_rect_shape = vectorio.VectorShape(shape=self._outline_rect, x=x, y=y,
+                                                        pixel_shader=_outline_palette)
+
+        _inner_outline_palette = displayio.Palette(2)
+        _inner_outline_palette[1] = self._palette[0]
+        _inner_outline_palette.make_transparent(0)
+        self._inner_outline_rect = vectorio.Polygon(
+            points=[(0, 0), (self._width - 2, 0), (self._width - 2, self._height - 2), (0, self._height - 2)])
+        self._inner_outline_rect_shape = vectorio.VectorShape(shape=self._inner_outline_rect, x=x + 1, y=y + 1,
+                                                              pixel_shader=_inner_outline_palette)
+
+        self._fill_bar_max = self._width - 4
+        _fill_bar_palette = displayio.Palette(2)
+        _fill_bar_palette[1] = self._palette[2]
+        _fill_bar_palette.make_transparent(0)
+        self._fill_bar_rect = vectorio.Polygon(
+            points=[
+                (0, 0),
+                (int(self._fill_bar_max * self._progress_val), 0),
+                (int(self._fill_bar_max * self._progress_val), self._height - 4),
+                (0, self._height - 4)])
+        self._fill_bar_rect_shape = vectorio.VectorShape(shape=self._fill_bar_rect, x=x + 2, y=y + 2,
+                                                         pixel_shader=_fill_bar_palette)
+
+        super().__init__(max_size=3, scale=1, x=x, y=y)
+        self.append(self._outline_rect_shape)
+        self.append(self._inner_outline_rect_shape)
+        self.append(self._fill_bar_rect_shape)
+
+        """
         for _w in range(width):
             for line in range(stroke):
                 self._bitmap[_w, line] = 1
@@ -95,7 +132,9 @@ class ProgressBar(displayio.TileGrid):
             for line in range(stroke):
                 self._bitmap[line, _h] = 1
                 self._bitmap[width - 1 - line, _h] = 1
+
         super().__init__(self._bitmap, pixel_shader=self._palette, x=x, y=y)
+        """
 
     @property
     def progress(self):
@@ -111,21 +150,21 @@ class ProgressBar(displayio.TileGrid):
 
         :param float value: Progress bar value.
         """
+
         assert value <= 1.0, "Progress value may not be > 100%"
         assert isinstance(
             value, float
         ), "Progress value must be a floating point value."
-        if self._progress_val > value:
-            # uncolorize range from width*value+margin to width-margin
-            for _w in range(int(value * self._width + 2), self._width - 2):
-                for _h in range(2, self._height - 2):
-                    self._bitmap[_w, _h] = 0
-        else:
-            # fully fill progress bar color
-            for _w in range(2, self._width * value - 2):
-                for _h in range(2, self._height - 2):
-                    self._bitmap[_w, _h] = 2
-        self._progress_val = value
+
+        _new_points = [
+            (0, 0),
+            (int(self._fill_bar_max * value), 0),
+            (int(self._fill_bar_max * value), self._height - 4),
+            (0, self._height - 4)
+        ]
+        print(_new_points)
+        self._fill_bar_rect.points = _new_points
+
 
     @property
     def fill(self):
