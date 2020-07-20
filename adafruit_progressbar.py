@@ -117,12 +117,17 @@ class ProgressBar(displayio.TileGrid):
         ), "Progress value must be a floating point value."
         if self._progress_val > value:
             # uncolorize range from width*value+margin to width-margin
-            for _w in range(int(value * self._width + 2), self._width - 2):
+            # from right to left
+            _prev_pixel = max(2, int(self._width * self._progress_val - 2))
+            _new_pixel = max(int(self._width * value - 2), 2)
+            for _w in range(_prev_pixel, _new_pixel - 1, -1):
                 for _h in range(2, self._height - 2):
                     self._bitmap[_w, _h] = 0
         else:
-            # fully fill progress bar color
-            for _w in range(2, self._width * value - 2):
+            # fill from the previous x pixel to the new x pixel
+            _prev_pixel = max(2, int(self._width * self._progress_val - 3))
+            _new_pixel = min(int(self._width * value - 2), int(self._width * 1.0 - 3))
+            for _w in range(_prev_pixel, _new_pixel + 1):
                 for _h in range(2, self._height - 2):
                     self._bitmap[_w, _h] = 2
         self._progress_val = value
