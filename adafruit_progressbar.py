@@ -63,17 +63,17 @@ class ProgressBar(displayio.Group):
 
     """
 
-    # pylint: disable=invalid-name
+    # pylint: disable=invalid-name,too-many-instance-attributes
     def __init__(
-            self,
-            x,
-            y,
-            width,
-            height,
-            progress=0.0,
-            bar_color=0x00FF00,
-            outline_color=0xFFFFFF,
-            stroke=1,
+        self,
+        x,
+        y,
+        width,
+        height,
+        progress=0.0,
+        bar_color=0x00FF00,
+        outline_color=0xFFFFFF,
+        stroke=1,
     ):
         assert isinstance(progress, float), "Progress must be a floating point value."
 
@@ -86,26 +86,43 @@ class ProgressBar(displayio.Group):
         self._height = height
 
         self._progress_val = progress
-
+        self._stroke = stroke
         # draw outline rectangle
         _outline_palette = displayio.Palette(2)
         _outline_palette.make_transparent(0)
         _outline_palette[1] = self._palette[1]
 
         self._outline_rect = vectorio.Polygon(
-            points=[(0, 0), (self._width, 0), (self._width, self._height), (0, self._height)])
-        self._outline_rect_shape = vectorio.VectorShape(shape=self._outline_rect, x=x, y=y,
-                                                        pixel_shader=_outline_palette)
-
+            points=[
+                (0, 0),
+                (self._width, 0),
+                (self._width, self._height),
+                (0, self._height),
+            ]
+        )
+        self._outline_rect_shape = vectorio.VectorShape(
+            shape=self._outline_rect, x=0, y=0, pixel_shader=_outline_palette
+        )
+        # draw inner outline rectangle
         _inner_outline_palette = displayio.Palette(2)
         _inner_outline_palette[1] = self._palette[0]
         _inner_outline_palette.make_transparent(0)
         self._inner_outline_rect = vectorio.Polygon(
-            points=[(0, 0), (self._width - 2, 0), (self._width - 2, self._height - 2), (0, self._height - 2)])
-        self._inner_outline_rect_shape = vectorio.VectorShape(shape=self._inner_outline_rect, x=x + 1, y=y + 1,
-                                                              pixel_shader=_inner_outline_palette)
-
-        self._fill_bar_max = self._width - 4
+            points=[
+                (0, 0),
+                (self._width - 1 - stroke, 0),
+                (self._width - 1 - stroke, self._height - 1 - stroke),
+                (0, self._height - 1 - stroke),
+            ]
+        )
+        self._inner_outline_rect_shape = vectorio.VectorShape(
+            shape=self._inner_outline_rect,
+            x=stroke // 2 + 1,
+            y=stroke // 2 + 1,
+            pixel_shader=_inner_outline_palette,
+        )
+        # draw fill bar
+        self._fill_bar_max = self._width - 3 - stroke
         _fill_bar_palette = displayio.Palette(2)
         _fill_bar_palette[1] = self._palette[2]
         _fill_bar_palette.make_transparent(0)
@@ -113,28 +130,24 @@ class ProgressBar(displayio.Group):
             points=[
                 (0, 0),
                 (int(self._fill_bar_max * self._progress_val), 0),
-                (int(self._fill_bar_max * self._progress_val), self._height - 4),
-                (0, self._height - 4)])
-        self._fill_bar_rect_shape = vectorio.VectorShape(shape=self._fill_bar_rect, x=x + 2, y=y + 2,
-                                                         pixel_shader=_fill_bar_palette)
+                (
+                    int(self._fill_bar_max * self._progress_val),
+                    self._height - 3 - stroke,
+                ),
+                (0, self._height - 3 - stroke),
+            ]
+        )
+        self._fill_bar_rect_shape = vectorio.VectorShape(
+            shape=self._fill_bar_rect,
+            x=1 + (stroke // 2 + 1),
+            y=1 + (stroke // 2 + 1),
+            pixel_shader=_fill_bar_palette,
+        )
 
         super().__init__(max_size=3, scale=1, x=x, y=y)
         self.append(self._outline_rect_shape)
         self.append(self._inner_outline_rect_shape)
         self.append(self._fill_bar_rect_shape)
-
-        """
-        for _w in range(width):
-            for line in range(stroke):
-                self._bitmap[_w, line] = 1
-                self._bitmap[_w, height - 1 - line] = 1
-        for _h in range(height):
-            for line in range(stroke):
-                self._bitmap[line, _h] = 1
-                self._bitmap[width - 1 - line, _h] = 1
-
-        super().__init__(self._bitmap, pixel_shader=self._palette, x=x, y=y)
-        """
 
     @property
     def progress(self):
@@ -159,12 +172,10 @@ class ProgressBar(displayio.Group):
         _new_points = [
             (0, 0),
             (int(self._fill_bar_max * value), 0),
-            (int(self._fill_bar_max * value), self._height - 4),
-            (0, self._height - 4)
+            (int(self._fill_bar_max * value), self._height - 3 - self._stroke),
+            (0, self._height - 3 - self._stroke),
         ]
-        print(_new_points)
         self._fill_bar_rect.points = _new_points
-
 
     @property
     def fill(self):
