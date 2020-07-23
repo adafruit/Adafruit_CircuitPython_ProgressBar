@@ -45,7 +45,6 @@ import vectorio
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/brentru/Adafruit_CircuitPython_ProgressBar.git"
 
-
 # pylint: disable=too-many-arguments, too-few-public-methods
 class ProgressBar(displayio.Group):
     """A dynamic progress bar widget.
@@ -163,7 +162,6 @@ class ProgressBar(displayio.Group):
 
         :param float value: Progress bar value.
         """
-
         assert value <= 1.0, "Progress value may not be > 100%"
         assert isinstance(
             value, float
