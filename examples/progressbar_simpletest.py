@@ -8,7 +8,7 @@ splash = displayio.Group(max_size=10)
 board.DISPLAY.show(splash)
 
 # set progress bar width and height relative to board's display
-width = board.DISPLAY.width-40
+width = board.DISPLAY.width - 40
 height = 30
 
 x = board.DISPLAY.width // 2 - width // 2
