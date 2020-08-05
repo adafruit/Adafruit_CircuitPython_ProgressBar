@@ -83,8 +83,9 @@ class ProgressBar(displayio.TileGrid):
         self._width = width
         self._height = height
 
-        self._progress_val = progress
+        self._progress_val = 0.0
         self.progress = self._progress_val
+        self.progress = progress
 
         # draw outline rectangle
         for _w in range(width):
