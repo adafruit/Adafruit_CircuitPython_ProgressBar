@@ -80,8 +80,8 @@ class ProgressBar(displayio.TileGrid):
         self._palette[1] = outline_color
         self._palette[2] = bar_color
 
-        self._width = width
-        self._height = height
+        self.width = width
+        self.height = height
 
         self._progress_val = 0.0
         self.progress = self._progress_val
@@ -119,17 +119,17 @@ class ProgressBar(displayio.TileGrid):
         if self._progress_val > value:
             # uncolorize range from width*value+margin to width-margin
             # from right to left
-            _prev_pixel = max(2, int(self._width * self._progress_val - 2))
-            _new_pixel = max(int(self._width * value - 2), 2)
+            _prev_pixel = max(2, int(self.width * self._progress_val - 2))
+            _new_pixel = max(int(self.width * value - 2), 2)
             for _w in range(_prev_pixel, _new_pixel - 1, -1):
-                for _h in range(2, self._height - 2):
+                for _h in range(2, self.height - 2):
                     self._bitmap[_w, _h] = 0
         else:
             # fill from the previous x pixel to the new x pixel
-            _prev_pixel = max(2, int(self._width * self._progress_val - 3))
-            _new_pixel = min(int(self._width * value - 2), int(self._width * 1.0 - 3))
+            _prev_pixel = max(2, int(self.width * self._progress_val - 3))
+            _new_pixel = min(int(self.width * value - 2), int(self.width * 1.0 - 3))
             for _w in range(_prev_pixel, _new_pixel + 1):
-                for _h in range(2, self._height - 2):
+                for _h in range(2, self.height - 2):
                     self._bitmap[_w, _h] = 2
         self._progress_val = value
 
