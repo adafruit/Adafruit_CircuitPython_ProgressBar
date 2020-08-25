@@ -80,8 +80,8 @@ class ProgressBar(displayio.TileGrid):
         self._palette[1] = outline_color
         self._palette[2] = bar_color
 
-        self.width = width
-        self.height = height
+        self._width = width
+        self._height = height
 
         self._progress_val = 0.0
         self.progress = self._progress_val
@@ -140,6 +140,20 @@ class ProgressBar(displayio.TileGrid):
 
         """
         return self._palette[0]
+
+    @property
+    def width(self):
+        """The width of the progress bar. In pixels, includes the border.
+
+        """
+        return self._width
+
+    @property
+    def height(self):
+        """The height of the progress bar. In pixels, includes the border.
+
+        """
+        return self._height
 
     @fill.setter
     def fill(self, color):
