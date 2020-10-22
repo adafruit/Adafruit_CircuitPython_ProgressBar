@@ -80,6 +80,7 @@ class ProgressBar(displayio.TileGrid):
         self._palette[1] = outline_color
         self._palette[2] = bar_color
 
+        # _width and _height are already in use for blinka TileGrid
         self._bar_width = width
         self._bar_height = height
 
