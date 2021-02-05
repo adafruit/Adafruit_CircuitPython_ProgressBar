@@ -103,7 +103,12 @@ class ProgressBarBase(displayio.TileGrid):
         """The vertical (y) position of the top-left corner of the widget."""
         return self._position[1]
 
-    @property.setter
+    @property
+    def progress(self):
+        """Gets the current displayed value of the widget."""
+        return self._progress
+
+    @progress.setter
     def progress(self, value):
         """The current displayed value of the widget.
 
