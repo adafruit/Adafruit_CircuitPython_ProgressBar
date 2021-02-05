@@ -22,13 +22,13 @@ Implementation Notes
 """
 
 # imports
-import displayio
+from adafruit_progressbar_base import ProgressBarBase
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/brentru/Adafruit_CircuitPython_ProgressBar.git"
 
 # pylint: disable=too-many-arguments, too-few-public-methods
-class ProgressBar(displayio.TileGrid):
+class ProgressBar(ProgressBarBase):
     """A dynamic progress bar widget.
 
     :param int x: The x-position of the top left corner.
@@ -57,11 +57,6 @@ class ProgressBar(displayio.TileGrid):
         stroke=1,
     ):
         assert isinstance(progress, float), "Progress must be a floating point value."
-        self._bitmap = displayio.Bitmap(width, height, 3)
-        self._palette = displayio.Palette(3)
-        self._palette[0] = 0x0
-        self._palette[1] = outline_color
-        self._palette[2] = bar_color
 
         # _width and _height are already in use for blinka TileGrid
         self._bar_width = width
@@ -80,7 +75,15 @@ class ProgressBar(displayio.TileGrid):
             for line in range(stroke):
                 self._bitmap[line, _h] = 1
                 self._bitmap[width - 1 - line, _h] = 1
-        super().__init__(self._bitmap, pixel_shader=self._palette, x=x, y=y)
+
+        super(ProgressBarBase, self).__init__(
+            (x, y),
+            (width, height),
+            self.progress,
+            self._palette[0],
+            self._palette[1],
+            self._palette[2],
+        )
 
     @property
     def progress(self):
@@ -147,3 +150,6 @@ class ProgressBar(displayio.TileGrid):
         else:
             self._palette[2] = color
             self._palette.make_opaque(0)
+
+    def render(self):
+        super().render()
