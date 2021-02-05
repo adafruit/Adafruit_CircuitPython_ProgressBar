@@ -50,6 +50,7 @@ class ProgressBarBase(displayio.TileGrid):
                             Default: 0x000000 (Black)
     """
 
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         position: (int, int),
@@ -69,7 +70,7 @@ class ProgressBarBase(displayio.TileGrid):
         self._palette[1] = outline_color
         self._palette[2] = bar_color
 
-        super(ProgressBarBase, self).__init__(
+        super().__init__(
             self._bitmap,
             pixel_shader=self._palette,
             x=self._position[0],
@@ -84,36 +85,34 @@ class ProgressBarBase(displayio.TileGrid):
 
     @property.getter
     def width(self):
-        """The total width of the widget"""
+        """The total width of the widget, in pixels. Includes the border and margin."""
         return self._size[0]
 
     @property.getter
     def height(self):
-        """The total height of the widget"""
+        """The total height of the widget, in pixels. Includes the border and margin."""
         return self._size[1]
 
     @property.getter
     def x(self):
-        """The horizontal (x) position of the top-left corner of the widget"""
+        """The horizontal (x) position of the top-left corner of the widget."""
         return self._position[0]
 
     @property.getter
     def y(self):
-        """The vertical (y) position of the top-left corner of the widget"""
+        """The vertical (y) position of the top-left corner of the widget."""
         return self._position[1]
-
-    @property
-    def progress(self):
-        """The current displayed value of the widget"""
-        return self._progress
 
     @property.setter
     def progress(self, value):
-        """Sets/updates the displayed value"""
+        """The current displayed value of the widget.
+
+        :param float value: The new value which should be displayed by the progress
+                            bar. Must be between 0.0-1.0
+        """
         self._progress = value
         self.render()
 
     def render(self):
         """The method called when the display needs to be updated. This method
         can be overridden in child classes to handle the graphics appropriately."""
-        pass

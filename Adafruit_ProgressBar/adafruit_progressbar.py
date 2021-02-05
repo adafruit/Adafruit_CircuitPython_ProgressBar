@@ -76,7 +76,7 @@ class ProgressBar(ProgressBarBase):
                 self._bitmap[line, _h] = 1
                 self._bitmap[width - 1 - line, _h] = 1
 
-        super(ProgressBarBase, self).__init__(
+        super().__init__(
             (x, y),
             (width, height),
             self.progress,
@@ -128,16 +128,6 @@ class ProgressBar(ProgressBarBase):
         """
         return self._palette[0]
 
-    @property
-    def width(self):
-        """The width of the progress bar. In pixels, includes the border."""
-        return self._bar_width
-
-    @property
-    def height(self):
-        """The height of the progress bar. In pixels, includes the border."""
-        return self._bar_height
-
     @fill.setter
     def fill(self, color):
         """Sets the fill of the progress bar. Can be a hex value for a color or ``None`` for
@@ -152,4 +142,6 @@ class ProgressBar(ProgressBarBase):
             self._palette.make_opaque(0)
 
     def render(self):
+        print("Calling 'super().render()' before our own code")
         super().render()
+        print("Calling own 'render()' code")
