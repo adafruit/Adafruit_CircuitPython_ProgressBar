@@ -29,6 +29,27 @@ __repo__ = "https://github.com/brentru/Adafruit_CircuitPython_ProgressBar.git"
 
 
 class ProgressBarBase(displayio.TileGrid):
+    """The base class for dynamic progress bar widgets.
+
+    :param (int, int) position: The coordinates (x, y) of the top left corner
+    :param (int, int) size: The size (width, height) of the progress bar
+    :param flaot start_value: The beginning value of the progress bar. This value
+                              is displayed when the progress bar is first visible,
+                              if it hasn't been updated.
+    :param int bar_color: The color of the bar representing the value. This can
+                            be a hexadecimal value for color (0x224466).
+                            Default: 0x00FF00 (Solid green)
+    :param int outline_color: The color of the border around the progress bar. This
+                            can be a hexadecimal value for color (0x4488BB).
+                            Default: 0xFFFFFF (White)
+    :param int fill_color: The colour of the bar representing the remainder of the
+                            value. i.e. if the current value is 42%, the 42 value
+                            is represented by the bar_color parameter. The remainder,
+                            58%, will be displayed in this color. This can also
+                            be a hexadecimal value for color (0xEE7755).
+                            Default: 0x000000 (Black)
+    """
+
     def __init__(
         self,
         position: (int, int),
@@ -63,28 +84,36 @@ class ProgressBarBase(displayio.TileGrid):
 
     @property.getter
     def width(self):
+        """The total width of the widget"""
         return self._size[0]
 
     @property.getter
     def height(self):
+        """The total height of the widget"""
         return self._size[1]
 
     @property.getter
     def x(self):
+        """The horizontal (x) position of the top-left corner of the widget"""
         return self._position[0]
 
     @property.getter
     def y(self):
+        """The vertical (y) position of the top-left corner of the widget"""
         return self._position[1]
 
     @property
     def progress(self):
+        """The current displayed value of the widget"""
         return self._progress
 
     @property.setter
     def progress(self, value):
+        """Sets/updates the displayed value"""
         self._progress = value
         self.render()
 
     def render(self):
+        """The method called when the display needs to be updated. This method
+        can be overridden in child classes to handle the graphics appropriately."""
         pass
