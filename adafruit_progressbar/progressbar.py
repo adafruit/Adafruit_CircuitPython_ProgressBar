@@ -22,7 +22,7 @@ Implementation Notes
 """
 
 # imports
-from adafruit_progressbar_base import ProgressBarBase
+from adafruit_progressbar.progressbar_base import ProgressBarBase
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/brentru/Adafruit_CircuitPython_ProgressBar.git"
@@ -85,14 +85,6 @@ class ProgressBar(ProgressBarBase):
             self._palette[2],
         )
 
-    @property
-    def progress(self):
-        """The percentage of the progress bar expressed as a
-        floating point number.
-
-        """
-        return self._progress_val
-
     @progress.setter
     def progress(self, value):
         """Draws the progress bar
@@ -103,6 +95,9 @@ class ProgressBar(ProgressBarBase):
         assert isinstance(
             value, float
         ), "Progress value must be a floating point value."
+
+        super().progress(value)
+
         if self._progress_val > value:
             # uncolorize range from width*value+margin to width-margin
             # from right to left

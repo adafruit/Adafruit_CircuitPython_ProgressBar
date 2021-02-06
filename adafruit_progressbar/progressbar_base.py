@@ -61,6 +61,13 @@ class ProgressBarBase(displayio.TileGrid):
         fill_color=0x000000,
     ):
 
+        super().__init__(
+            self._bitmap,
+            pixel_shader=self._palette,
+            x=self._position[0],
+            y=self._position[1],
+        )
+
         self._size = size
         self._position = position
         self._progress = start_value
@@ -69,13 +76,6 @@ class ProgressBarBase(displayio.TileGrid):
         self._palette[0] = fill_color
         self._palette[1] = outline_color
         self._palette[2] = bar_color
-
-        super().__init__(
-            self._bitmap,
-            pixel_shader=self._palette,
-            x=self._position[0],
-            y=self._position[1],
-        )
 
     _bitmap: displayio.Bitmap  # The bitmap used for the bar/value
     _position: (int, int)  # The (x,y) coordinates of the top-left corner

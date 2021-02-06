@@ -4,7 +4,7 @@
 import time
 import board
 import displayio
-from adafruit_progressbar import ProgressBar
+from adafruit_progressbar.progressbar import ProgressBar
 
 # Make the display context
 splash = displayio.Group(max_size=10)
