@@ -59,31 +59,36 @@ class ProgressBar(ProgressBarBase):
         assert isinstance(progress, float), "Progress must be a floating point value."
 
         # _width and _height are already in use for blinka TileGrid
-        self._bar_width = width
-        self._bar_height = height
+        #         self._bar_width = width
+        #         self._bar_height = height
 
-        self._progress_val = 0.0
-        self.progress = self._progress_val
-        self.progress = progress
-
-        # draw outline rectangle
-        for _w in range(width):
-            for line in range(stroke):
-                self._bitmap[_w, line] = 1
-                self._bitmap[_w, height - 1 - line] = 1
-        for _h in range(height):
-            for line in range(stroke):
-                self._bitmap[line, _h] = 1
-                self._bitmap[width - 1 - line, _h] = 1
-
+        #         self._progress_val = 0.0
+        #         self.progress = self._progress_val
+        #         self.progress = progress
+        #
+        #         # draw outline rectangle
+        #         for _w in range(width):
+        #             for line in range(stroke):
+        #                 self._bitmap[_w, line] = 1
+        #                 self._bitmap[_w, height - 1 - line] = 1
+        #         for _h in range(height):
+        #             for line in range(stroke):
+        #                 self._bitmap[line, _h] = 1
+        #                 self._bitmap[width - 1 - line, _h] = 1
+        #
         super().__init__(
             (x, y),
             (width, height),
-            self.progress,
-            self._palette[0],
-            self._palette[1],
-            self._palette[2],
+            progress,
+            bar_color,
+            0xAAAAAA,
+            0x444444,
+            border_thickness=stroke,
         )
+
+    @property
+    def progress(self):
+        return ProgressBarBase.progress.fget(self)
 
     @progress.setter
     def progress(self, value):
@@ -96,24 +101,7 @@ class ProgressBar(ProgressBarBase):
             value, float
         ), "Progress value must be a floating point value."
 
-        super().progress(value)
-
-        if self._progress_val > value:
-            # uncolorize range from width*value+margin to width-margin
-            # from right to left
-            _prev_pixel = max(2, int(self.width * self._progress_val - 2))
-            _new_pixel = max(int(self.width * value - 2), 2)
-            for _w in range(_prev_pixel, _new_pixel - 1, -1):
-                for _h in range(2, self.height - 2):
-                    self._bitmap[_w, _h] = 0
-        else:
-            # fill from the previous x pixel to the new x pixel
-            _prev_pixel = max(2, int(self.width * self._progress_val - 3))
-            _new_pixel = min(int(self.width * value - 2), int(self.width * 1.0 - 3))
-            for _w in range(_prev_pixel, _new_pixel + 1):
-                for _h in range(2, self.height - 2):
-                    self._bitmap[_w, _h] = 2
-        self._progress_val = value
+        ProgressBarBase.progress.fset(self, value)
 
     @property
     def fill(self):
@@ -136,7 +124,32 @@ class ProgressBar(ProgressBarBase):
             self._palette[2] = color
             self._palette.make_opaque(0)
 
-    def render(self):
-        print("Calling 'super().render()' before our own code")
-        super().render()
-        print("Calling own 'render()' code")
+    def render(self, _previous_value, _new_value):
+        """
+        The rendering mechanism to display the newly set value.
+
+        :param _previous_value: The value from which we are updating
+        :param _new_value: The value to which we are updating
+        :return: None
+        """
+        #         print("Calling 'super().render()' before our own code")
+        #         super().render()
+        #        print("Calling own 'render()' code")
+
+        if _previous_value > _new_value:
+            # uncolorize range from width*value+margin to width-margin
+            # from right to left
+            _prev_pixel = max(2, int(self.width * self.progress - 2))
+            _new_pixel = max(int(self.width * _new_value - 2), 2)
+            for _w in range(_prev_pixel, _new_pixel - 1, -1):
+                for _h in range(2, self.height - 2):
+                    self._bitmap[_w, _h] = 0
+        else:
+            # fill from the previous x pixel to the new x pixel
+            _prev_pixel = max(2, int(self.width * self.progress - 3))
+            _new_pixel = min(
+                int(self.width * _new_value - 2), int(self.width * 1.0 - 3)
+            )
+            for _w in range(_prev_pixel, _new_pixel + 1):
+                for _h in range(2, self.height - 2):
+                    self._bitmap[_w, _h] = 2

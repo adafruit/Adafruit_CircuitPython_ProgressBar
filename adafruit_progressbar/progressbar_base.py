@@ -59,14 +59,8 @@ class ProgressBarBase(displayio.TileGrid):
         bar_color=0x00FF00,
         outline_color=0xFFFFFF,
         fill_color=0x000000,
+        border_thickness=1,
     ):
-
-        super().__init__(
-            self._bitmap,
-            pixel_shader=self._palette,
-            x=self._position[0],
-            y=self._position[1],
-        )
 
         self._size = size
         self._position = position
@@ -76,29 +70,40 @@ class ProgressBarBase(displayio.TileGrid):
         self._palette[0] = fill_color
         self._palette[1] = outline_color
         self._palette[2] = bar_color
+        self._border_thickness = border_thickness
+
+        super().__init__(
+            self._bitmap,
+            pixel_shader=self._palette,
+            x=self._position[0],
+            y=self._position[1],
+        )
+
+        self._draw_outline()
 
     _bitmap: displayio.Bitmap  # The bitmap used for the bar/value
     _position: (int, int)  # The (x,y) coordinates of the top-left corner
     _size: (int, int)  # The dimensions of the progress bar
     _palette: displayio.Palette(3)  # The palette to be used
     _progress: float  # The value to represent, between 0.0 and 100.0
+    _border_thickness: int  # The thickness of the border around the control, in pixels
 
-    @property.getter
+    @property
     def width(self):
         """The total width of the widget, in pixels. Includes the border and margin."""
         return self._size[0]
 
-    @property.getter
+    @property
     def height(self):
         """The total height of the widget, in pixels. Includes the border and margin."""
         return self._size[1]
 
-    @property.getter
+    @property
     def x(self):
         """The horizontal (x) position of the top-left corner of the widget."""
         return self._position[0]
 
-    @property.getter
+    @property
     def y(self):
         """The vertical (y) position of the top-left corner of the widget."""
         return self._position[1]
@@ -108,6 +113,10 @@ class ProgressBarBase(displayio.TileGrid):
         """Gets the current displayed value of the widget."""
         return self._progress
 
+    @property
+    def border_thickness(self):
+        return self._border_thickness
+
     @progress.setter
     def progress(self, value):
         """The current displayed value of the widget.
@@ -115,9 +124,29 @@ class ProgressBarBase(displayio.TileGrid):
         :param float value: The new value which should be displayed by the progress
                             bar. Must be between 0.0-1.0
         """
+        _old_value = self._progress
         self._progress = value
-        self.render()
+        self.render(_old_value, self.progress)
 
-    def render(self):
+    def _draw_outline(self):
+
+        stroke = self.border_thickness
+
+        # draw outline rectangle
+        for _w in range(self.width):
+            for line in range(stroke):
+                self._bitmap[_w, line] = 1
+                self._bitmap[_w, self.height - 1 - line] = 1
+        for _h in range(self.height):
+            for line in range(stroke):
+                self._bitmap[line, _h] = 1
+                self._bitmap[self.width - 1 - line, _h] = 1
+
+    def render(self, _old_value, _new_value):
         """The method called when the display needs to be updated. This method
-        can be overridden in child classes to handle the graphics appropriately."""
+        can be overridden in child classes to handle the graphics appropriately.
+
+        :param _old_value: float: The value from which we're updating
+        :param _new_value: float: The value to which we're updating
+
+        """
