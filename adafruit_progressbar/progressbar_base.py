@@ -48,6 +48,14 @@ class ProgressBarBase(displayio.TileGrid):
                             58%, will be displayed in this color. This can also
                             be a hexadecimal value for color (0xEE7755).
                             Default: 0x000000 (Black)
+    :param bool show_margin: Specify whether a margin between the border of the widget and the bar
+                              representing the value should be visible or not.
+                              Default: True
+    :param (int, int) or (float, float) value_range: Specify the range of allowed values for which the progress
+                                                        should be displayed. When setting the "value" property,
+                                                        this range is the one against which its progression
+                                                        will be determined.
+                                                        Default: (0.0, 1.0)
     """
 
     # pylint: disable=too-many-arguments
@@ -60,6 +68,8 @@ class ProgressBarBase(displayio.TileGrid):
         outline_color=0xFFFFFF,
         fill_color=0x000000,
         border_thickness=1,
+        show_margin=False,
+        value_range=(0.0, 1.0),
     ):
 
         self._size = size
@@ -71,6 +81,8 @@ class ProgressBarBase(displayio.TileGrid):
         self._palette[1] = outline_color
         self._palette[2] = bar_color
         self._border_thickness = border_thickness
+        self._show_margin = show_margin
+        self._range = value_range
 
         super().__init__(
             self._bitmap,
@@ -87,16 +99,24 @@ class ProgressBarBase(displayio.TileGrid):
     _palette: displayio.Palette(3)  # The palette to be used
     _progress: float  # The value to represent, between 0.0 and 100.0
     _border_thickness: int  # The thickness of the border around the control, in pixels
+    _show_margin: bool  # Whether we should display a margin between the border and the value/bar
+    # The minimum and maximum values we can represent
+    _range: (int, int) or (float, float)
+
+    @property
+    def size(self):
+        """The size at the outer edge of the control, returned as a tuple (width, height)"""
+        return self._size
 
     @property
     def width(self):
         """The total width of the widget, in pixels. Includes the border and margin."""
-        return self._size[0]
+        return self.size[0]
 
     @property
     def height(self):
         """The total height of the widget, in pixels. Includes the border and margin."""
-        return self._size[1]
+        return self.size[1]
 
     @property
     def x(self):
@@ -125,11 +145,29 @@ class ProgressBarBase(displayio.TileGrid):
                             bar. Must be between 0.0-1.0
         """
         _old_value = self._progress
-        self._progress = value
+        # If we're using floats, from 0.0 to 1.0, using 4 decimal places allows us to handle values as
+        # precise as 0.23456, which evaluates to a percentage value of 23.45% (with rounding)
+        self._progress = round(value, 4)
         self.render(_old_value, self.progress)
 
-    def _draw_outline(self):
+    @property
+    def range(self):
+        """The range which can be handled as a tuple (min,max)"""
+        return self._range
 
+    @property
+    def minimum(self):
+        """The minimum (lowest) value which can be displayed"""
+        return self.range[0]
+
+    @property
+    def maximum(self):
+        """The maximum (highest) value which can be displayed"""
+        return self.range[1]
+
+    def _draw_outline(self):
+        """Draws the outline (border) of the progressbar, with a thickness value
+        from self.border_thickness."""
         stroke = self.border_thickness
 
         # draw outline rectangle

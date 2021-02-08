@@ -56,26 +56,11 @@ class ProgressBar(ProgressBarBase):
         outline_color=0xFFFFFF,
         stroke=1,
     ):
+
+        # This needs to remain, since for backward compatibility, the default ProgressBar class
+        # should only be able to handle values of type "float"
         assert isinstance(progress, float), "Progress must be a floating point value."
 
-        # _width and _height are already in use for blinka TileGrid
-        #         self._bar_width = width
-        #         self._bar_height = height
-
-        #         self._progress_val = 0.0
-        #         self.progress = self._progress_val
-        #         self.progress = progress
-        #
-        #         # draw outline rectangle
-        #         for _w in range(width):
-        #             for line in range(stroke):
-        #                 self._bitmap[_w, line] = 1
-        #                 self._bitmap[_w, height - 1 - line] = 1
-        #         for _h in range(height):
-        #             for line in range(stroke):
-        #                 self._bitmap[line, _h] = 1
-        #                 self._bitmap[width - 1 - line, _h] = 1
-        #
         super().__init__(
             (x, y),
             (width, height),
@@ -84,6 +69,8 @@ class ProgressBar(ProgressBarBase):
             0xAAAAAA,
             0x444444,
             border_thickness=stroke,
+            show_margin=True,
+            value_range=(0.0, 1.0),
         )
 
     @property
@@ -107,7 +94,6 @@ class ProgressBar(ProgressBarBase):
     def fill(self):
         """The fill of the progress bar. Can be a hex value for a color or ``None`` for
         transparent.
-
         """
         return self._palette[0]
 
@@ -115,7 +101,6 @@ class ProgressBar(ProgressBarBase):
     def fill(self, color):
         """Sets the fill of the progress bar. Can be a hex value for a color or ``None`` for
         transparent.
-
         """
         if color is None:
             self._palette[2] = 0
@@ -128,8 +113,10 @@ class ProgressBar(ProgressBarBase):
         """
         The rendering mechanism to display the newly set value.
 
-        :param _previous_value: The value from which we are updating
-        :param _new_value: The value to which we are updating
+        :param _previous_value: any: The value from which we are updating
+        :param _new_value: any: The value to which we are updating
+        :param _progress_value: float: The value of the progress, or ratio between the new value and the
+                                        maximum value
         :return: None
         """
         #         print("Calling 'super().render()' before our own code")
