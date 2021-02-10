@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-`adafruit_progressbar`
+`progressbar`
 ================================================================================
 
 Dynamic progress bar widget for CircuitPython displays
@@ -22,26 +22,30 @@ Implementation Notes
 """
 
 # imports
-from adafruit_progressbar.progressbar_base import ProgressBarBase
+from . import ProgressBarBase
 
-__version__ = "0.0.0-auto.0"
-__repo__ = "https://github.com/brentru/Adafruit_CircuitPython_ProgressBar.git"
 
 # pylint: disable=too-many-arguments, too-few-public-methods
 class ProgressBar(ProgressBarBase):
     """A dynamic progress bar widget.
 
-    :param int x: The x-position of the top left corner.
-    :param int y: The y-position of the top left corner.
-    :param int width: The width of the progress bar.
-    :param int height: The height of the progress bar.
-    :param float progress: The percentage of the progress bar.
+    :param x: The x-position of the top left corner.
+    :type x: int
+    :param y: The y-position of the top left corner.
+    :type y: int
+    :param width: The width of the progress bar.
+    :type width: int
+    :param height: The height of the progress bar.
+    :type height: int
+    :param progress: The percentage of the progress bar.
+    :type progress: float
     :param bar_color: The color of the progress bar. Can be a hex
-                                value for color.
-    :param int outline_color: The outline of the progress bar. Can be a hex
-                            value for color.
-    :param int stroke: Used for the outline_color
-
+        value for color.
+    :param outline_color: The outline of the progress bar. Can be a hex
+        value for color.
+    :type outline_color: int
+    :param stroke: Used for the outline_color
+    :type stroke: int
     """
 
     # pylint: disable=invalid-name
@@ -81,7 +85,8 @@ class ProgressBar(ProgressBarBase):
     def progress(self, value):
         """Draws the progress bar
 
-        :param float value: Progress bar value.
+        :param value: Progress bar value.
+        :type value: float
         """
         assert value <= 1.0, "Progress value may not be > 100%"
         assert isinstance(
@@ -109,14 +114,17 @@ class ProgressBar(ProgressBarBase):
             self._palette[2] = color
             self._palette.make_opaque(0)
 
-    def render(self, _previous_value, _new_value):
+    def render(self, _previous_value, _new_value, _progress_value):
         """
         The rendering mechanism to display the newly set value.
 
-        :param _previous_value: any: The value from which we are updating
-        :param _new_value: any: The value to which we are updating
-        :param _progress_value: float: The value of the progress, or ratio between the new value and the
-                                        maximum value
+        :param _previous_value:  The value from which we are updating
+        :type _previous_value: object
+        :param _new_value: The value to which we are updating
+        :type _new_value: object
+        :param _progress_value: The value of the progress, or ratio between the new value and the
+            maximum value
+        :type _progress_value: float
         :return: None
         """
         #         print("Calling 'super().render()' before our own code")

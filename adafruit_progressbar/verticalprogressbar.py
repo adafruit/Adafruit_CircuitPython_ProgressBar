@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-`adafruit_progressbar`
+`verticalprogressbar`
 ================================================================================
 
 Dynamic progress bar widget for CircuitPython displays
@@ -24,11 +24,8 @@ Implementation Notes
 """
 
 # imports
+from . import ProgressBarBase
 import displayio
-from adafruit_progressbar.progressbar_base import ProgressBarBase
-
-__version__ = "2.0.0-a.1"
-__repo__ = "https://github.com/brentru/Adafruit_CircuitPython_ProgressBar.git"
 
 
 class FillDirection(object):
@@ -40,7 +37,7 @@ class FillDirection(object):
 
 
 # pylint: disable=too-many-arguments, too-few-public-methods
-class ProgressBar(displayio.TileGrid):
+class ProgressBar(ProgressBarBase):
     """A dynamic progress bar widget.
 
     The anchor position is the position where the control would start if it
@@ -48,28 +45,35 @@ class ProgressBar(displayio.TileGrid):
     the lower-left corner for ascending progress bars (fills from the bottom to
     to the top in vertical bars, or from the left to the right in horizontal
     progress bars), upper-left corner for descending progress bars (fills from
-    the top to the bottom).
+    the top to the bottom).::
 
-    Vertical            Horizontal
+        Vertical            Horizontal
 
-    1--2                1-----------------------2
-    |  |                |                       |
-    |  |                |                       |
-    |  |                3-----------------------4
-    |  |
-    3--4
+        1--2                1-----------------------2
+        |  |                |                       |
+        |  |                |                       |
+        |  |                3-----------------------4
+        |  |
+        3--4
 
-    :param (int, int) anchor_position: The anchor coordinates of the progress bar.
-    :param (int, int) size: The size in (width, height) of the progress bar
-    :param float progress: The percentage of the progress bar.
+    :param anchor_position: The anchor coordinates of the progress bar.
+    :type anchor_position: Tuple[int, int]
+    :param size: The size in (width, height) of the progress bar
+    :type size: Tuple[int, int]
+    :param progress: The percentage of the progress bar.
+    :type progress: float
     :param bar_color: The color of the progress bar. Can be a hex
-                                value for color.
-    :param int outline_color: The outline of the progress bar. Can be a hex
-                            value for color.
-    :param int stroke: Used for the outline_color
-    :param bool margin: Whether or not to have a margin between the border and
-                        the fill, or not.
-    :param FillDirection direction: The direction of the fill
+        value for color.
+    :param outline_color: The outline of the progress bar. Can be a hex
+        value for color.
+    :type outline_color: int
+    :param stroke: Used for the outline_color
+    :type stroke: int
+    :param margin: Whether or not to have a margin between the border and
+        the fill, or not.
+    :type margin: bool
+    :param direction: The direction of the fill
+    :type direction: FillDirection
 
     """
 
@@ -145,7 +149,8 @@ class ProgressBar(displayio.TileGrid):
     def progress(self, value):
         """Draws the progress bar
 
-        :param float value: Progress bar value.
+        :param value: Progress bar value.
+        :type value: float
         """
         assert value <= self._max, "Progress value may not be > maximum value"
         assert value >= self._min, "Progress value may not be < minimum value"
