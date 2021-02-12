@@ -24,11 +24,15 @@ Implementation Notes
 """
 
 # imports
-from . import ProgressBarBase
 import displayio
+from . import ProgressBarBase
 
 
-class FillDirection(object):
+# pylint: disable=too-few-public-methods
+class FillDirection(enumerate):
+    """Enums to define the direction in which the progressbar
+    should fill"""
+
     LEFT_TO_RIGHT = 0
     DEFAULT = LEFT_TO_RIGHT
     BOTTOM_UP = 1
@@ -209,7 +213,7 @@ class ProgressBar(ProgressBarBase):
 
         # DEBUG
         print(
-            f"Start: {_start}   End: {_end}    Incr: {_incr}   Size: {_new_value_size}    Color: {_color}"
+            f"Start: {_start}  End: {_end}  Incr: {_incr}  Size: {_new_value_size}  Color: {_color}"
         )
 
         # Because range() is ( from-include, to-exclude )...

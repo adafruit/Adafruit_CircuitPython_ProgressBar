@@ -70,15 +70,18 @@ class ProgressBar(ProgressBarBase):
             (width, height),
             progress,
             bar_color,
-            0xAAAAAA,
+            outline_color,
             0x444444,
             border_thickness=stroke,
             show_margin=True,
             value_range=(0.0, 1.0),
         )
 
+    _outline_color: int  # The colour used for the border of the widget
+
     @property
     def progress(self):
+        """Returns the current progress value (percentage)"""
         return ProgressBarBase.progress.fget(self)
 
     @progress.setter
@@ -93,7 +96,14 @@ class ProgressBar(ProgressBarBase):
             value, float
         ), "Progress value must be a floating point value."
 
+        # pylint: disable=no-member
         ProgressBarBase.progress.fset(self, value)
+
+    @property
+    def outline_color(self):
+        """Returns the currently configured value for the color of the
+        outline (border) of the widget."""
+        return self._outline_color
 
     @property
     def fill(self):
@@ -114,7 +124,7 @@ class ProgressBar(ProgressBarBase):
             self._palette[2] = color
             self._palette.make_opaque(0)
 
-    def render(self, _previous_value, _new_value, _progress_value):
+    def render(self, _previous_value, _new_value, _progress_value) -> None:
         """
         The rendering mechanism to display the newly set value.
 
@@ -125,7 +135,7 @@ class ProgressBar(ProgressBarBase):
         :param _progress_value: The value of the progress, or ratio between the new value and the
             maximum value
         :type _progress_value: float
-        :return: None
+        :rtype None:
         """
         #         print("Calling 'super().render()' before our own code")
         #         super().render()

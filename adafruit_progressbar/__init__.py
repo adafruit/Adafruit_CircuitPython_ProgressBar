@@ -32,7 +32,7 @@ class ProgressBarBase(displayio.TileGrid):
     :type position: Tuple[int, int]
     :param size: The size (width, height) of the progress bar
     :type size: Tuple[int, int]
-    :param  start_value: The beginning value of the progress bar. This value
+    :param start_value: The beginning value of the progress bar. This value
                               is displayed when the progress bar is first visible,
                               if it hasn't been updated.
     :type start_value: float
@@ -139,6 +139,7 @@ class ProgressBarBase(displayio.TileGrid):
 
     @property
     def border_thickness(self):
+        """Gets the currently configured thickness of the border (in pixels)"""
         return self._border_thickness
 
     @progress.setter
@@ -149,10 +150,10 @@ class ProgressBarBase(displayio.TileGrid):
                             bar. Must be between 0.0-1.0
         """
         _old_value = self._progress
-        # If we're using floats, from 0.0 to 1.0, using 4 decimal places allows us to handle values as
-        # precise as 0.23456, which evaluates to a percentage value of 23.45% (with rounding)
+        # If we're using floats, from 0.0 to 1.0, using 4 decimal places allows us to handle values
+        # as precise as 0.23456, which evaluates to a percentage value of 23.45% (with rounding)
         self._progress = round(value, 4)
-        self.render(_old_value, self.progress)
+        self.render(_old_value, self.progress, self.progress)
 
     @property
     def range(self):
@@ -184,16 +185,21 @@ class ProgressBarBase(displayio.TileGrid):
                 self._bitmap[line, _h] = 1
                 self._bitmap[self.width - 1 - line, _h] = 1
 
-    def render(self, _old_value, _new_value):
+    def render(self, _old_value, _new_value, _progress_value) -> None:
         """The method called when the display needs to be updated. This method
         can be overridden in child classes to handle the graphics appropriately.
 
-        :param _old_value: float: The value from which we're updating
-        :param _new_value: float: The value to which we're updating
-
+        :param _old_value: The value from which we're updating
+        :type _old_value: float
+        :param _new_value: The value to which we're updating
+        :type _new_value: float
+        :param _progress_value: The value of the progress, or ratio between the new value and the
+            maximum value
+        :type _progress_value: float
+        :rtype None:
         """
 
-    def info():
+    def info(self):
         """This is the `info` method. It gives you info.
 
         This information is usefull for debugging, and
