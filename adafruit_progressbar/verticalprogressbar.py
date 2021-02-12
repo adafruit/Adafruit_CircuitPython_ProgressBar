@@ -40,8 +40,8 @@ class FillDirection(enumerate):
     RIGHT_TO_LEFT = 3
 
 
-# pylint: disable=too-many-arguments, too-few-public-methods
-class ProgressBar(ProgressBarBase):
+# pylint: disable=too-many-arguments, too-few-public-methods, too-many-instance-attributes
+class VerticalProgressBar(ProgressBarBase):
     """A dynamic progress bar widget.
 
     The anchor position is the position where the control would start if it
@@ -139,6 +139,8 @@ class ProgressBar(ProgressBarBase):
             for line in range(stroke):
                 self._bitmap[line, _h] = 1
                 self._bitmap[self._width - 1 - line, _h] = 1
+
+        # pylint: disable=unexpected-keyword-arg, no-value-for-parameter
         super().__init__(self._bitmap, pixel_shader=self._palette, x=self._x, y=self._y)
 
     @property
@@ -149,6 +151,7 @@ class ProgressBar(ProgressBarBase):
         """
         return self._progress_val
 
+    # pylint: disable=too-many-locals
     @progress.setter
     def progress(self, value):
         """Draws the progress bar
