@@ -77,7 +77,7 @@ class ProgressBar(ProgressBarBase):
             value_range=(0.0, 1.0),
         )
 
-    _outline_color: int  # The colour used for the border of the widget
+    #     _outline_color: int  # The colour used for the border of the widget
 
     @property
     def progress(self):
@@ -97,7 +97,7 @@ class ProgressBar(ProgressBarBase):
         ), "Progress value must be a floating point value."
 
         # pylint: disable=no-member
-        ProgressBarBase.progress.fset(self, value)
+        self._progress = value
 
     @property
     def outline_color(self):
@@ -144,17 +144,18 @@ class ProgressBar(ProgressBarBase):
         if _previous_value > _new_value:
             # uncolorize range from width*value+margin to width-margin
             # from right to left
-            _prev_pixel = max(2, int(self.width * self.progress - 2))
-            _new_pixel = max(int(self.width * _new_value - 2), 2)
+            _prev_pixel = max(2, int(self.widget_width * self.progress - 2))
+            _new_pixel = max(int(self.widget_width * _new_value - 2), 2)
             for _w in range(_prev_pixel, _new_pixel - 1, -1):
-                for _h in range(2, self.height - 2):
+                for _h in range(2, self.widget_height - 2):
                     self._bitmap[_w, _h] = 0
         else:
             # fill from the previous x pixel to the new x pixel
-            _prev_pixel = max(2, int(self.width * self.progress - 3))
+            _prev_pixel = max(2, int(self.widget_width * self.progress - 3))
             _new_pixel = min(
-                int(self.width * _new_value - 2), int(self.width * 1.0 - 3)
+                int(self.widget_width * _new_value - 2),
+                int(self.widget_width * 1.0 - 3),
             )
             for _w in range(_prev_pixel, _new_pixel + 1):
-                for _h in range(2, self.height - 2):
+                for _h in range(2, self.widget_height - 2):
                     self._bitmap[_w, _h] = 2

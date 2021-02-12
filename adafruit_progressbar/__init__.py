@@ -65,9 +65,9 @@ class ProgressBarBase(displayio.TileGrid):
     # pylint: disable=too-many-arguments
     def __init__(
         self,
-        position: (int, int),
-        size: (int, int),
-        start_value: float = 0.0,
+        position,
+        size,
+        start_value=0.0,
         bar_color=0x00FF00,
         outline_color=0xFFFFFF,
         fill_color=0x000000,
@@ -76,10 +76,11 @@ class ProgressBarBase(displayio.TileGrid):
         value_range=(0.0, 1.0),
     ):
 
-        self._size = size
+        self._widget_size = size
         self._position = position
         self._progress = start_value
-        self._bitmap = displayio.Bitmap(self.width, self.height, 3)
+        print(f"Size: {size} - WS: {self.widget_size}")
+        self._bitmap = displayio.Bitmap(size[0], size[1], 3)
         self._palette = displayio.Palette(3)
         self._palette[0] = fill_color
         self._palette[1] = outline_color
@@ -97,30 +98,36 @@ class ProgressBarBase(displayio.TileGrid):
 
         self._draw_outline()
 
-    _bitmap: displayio.Bitmap  # The bitmap used for the bar/value
-    _position: (int, int)  # The (x,y) coordinates of the top-left corner
-    _size: (int, int)  # The dimensions of the progress bar
-    _palette: displayio.Palette(3)  # The palette to be used
-    _progress: float  # The value to represent, between 0.0 and 100.0
-    _border_thickness: int  # The thickness of the border around the control, in pixels
-    _show_margin: bool  # Whether we should display a margin between the border and the value/bar
-    # The minimum and maximum values we can represent
-    _range: (int, int) or (float, float)
+    #     _bitmap: displayio.Bitmap  # The bitmap used for the bar/value
+    #     _position: (int, int)  # The (x,y) coordinates of the top-left corner
+    #     _widget_size: (int, int)  # The dimensions of the progress bar
+    #     _palette: displayio.Palette(3)  # The palette to be used
+    #     _progress: float  # The value to represent, between 0.0 and 100.0
+    #     _border_thickness: int  # The thickness of the border around the control, in pixels
+    #     _show_margin: bool  # Whether we should display a margin between
+    #       the border and the value/bar
+    #     # The minimum and maximum values we can represent
+    #     _range: (int, int) or (float, float)
 
     @property
-    def size(self):
+    def widget_size(self):
         """The size at the outer edge of the control, returned as a tuple (width, height)"""
-        return self._size
+        return self._widget_size
 
     @property
-    def width(self):
+    def widget_width(self):
         """The total width of the widget, in pixels. Includes the border and margin."""
-        return self.size[0]
+        return self.widget_size[0]
 
     @property
-    def height(self):
+    def widget_height(self):
         """The total height of the widget, in pixels. Includes the border and margin."""
-        return self.size[1]
+        return self.widget_size[1]
+
+    @property
+    def _outline_color(self):
+        """The colour of the border/outline of the widget"""
+        return self._palette[1]
 
     @property
     def x(self):
@@ -176,14 +183,14 @@ class ProgressBarBase(displayio.TileGrid):
         stroke = self.border_thickness
 
         # draw outline rectangle
-        for _w in range(self.width):
+        for _w in range(self.widget_width):
             for line in range(stroke):
                 self._bitmap[_w, line] = 1
-                self._bitmap[_w, self.height - 1 - line] = 1
-        for _h in range(self.height):
+                self._bitmap[_w, self.widget_height - 1 - line] = 1
+        for _h in range(self.widget_height):
             for line in range(stroke):
                 self._bitmap[line, _h] = 1
-                self._bitmap[self.width - 1 - line, _h] = 1
+                self._bitmap[self.widget_width - 1 - line, _h] = 1
 
     def render(self, _old_value, _new_value, _progress_value) -> None:
         """The method called when the display needs to be updated. This method
