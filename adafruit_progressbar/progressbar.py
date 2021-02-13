@@ -80,26 +80,6 @@ class ProgressBar(ProgressBarBase):
     #     _outline_color: int  # The colour used for the border of the widget
 
     @property
-    def progress(self):
-        """Returns the current progress value (percentage)"""
-        return ProgressBarBase.progress.fget(self)
-
-    @progress.setter
-    def progress(self, value):
-        """Draws the progress bar
-
-        :param value: Progress bar value.
-        :type value: float
-        """
-        assert value <= 1.0, "Progress value may not be > 100%"
-        assert isinstance(
-            value, float
-        ), "Progress value must be a floating point value."
-
-        # pylint: disable=no-member
-        self._progress = value
-
-    @property
     def outline_color(self):
         """Returns the currently configured value for the color of the
         outline (border) of the widget."""

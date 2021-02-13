@@ -160,6 +160,7 @@ class ProgressBarBase(displayio.TileGrid):
         # If we're using floats, from 0.0 to 1.0, using 4 decimal places allows us to handle values
         # as precise as 0.23456, which evaluates to a percentage value of 23.45% (with rounding)
         self._progress = round(value, 4)
+        print(f"Calling render() with ({_old_value}, {self.progress}, {self.progress})")
         self.render(_old_value, self.progress, self.progress)
 
     @property
@@ -204,11 +205,4 @@ class ProgressBarBase(displayio.TileGrid):
             maximum value
         :type _progress_value: float
         :rtype None:
-        """
-
-    def info(self):
-        """This is the `info` method. It gives you info.
-
-        This information is usefull for debugging, and
-        for testing inherited documentation.
         """
