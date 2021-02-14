@@ -49,7 +49,17 @@ class VerticalProgressBar(ProgressBarBase):
     the lower-left corner for ascending progress bars (fills from the bottom to
     to the top in vertical bars, or from the left to the right in horizontal
     progress bars), upper-left corner for descending progress bars (fills from
-    the top to the bottom).::
+    the top to the bottom).
+
+    Using the diagrams below, the bar will fill in the following directions::
+
+                     -----------------------------
+                     | Horizontal   | Vertical   |
+    ----------------------------------------------
+    | Ascending      |  1-3 to 2-4 |  3-4 to 1-2 |
+    ----------------------------------------------
+    | Descending     |  2-4 to 1-3 |  1-2 to 3-4 |
+    ----------------------------------------------
 
         Vertical            Horizontal
 
