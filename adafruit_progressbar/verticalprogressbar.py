@@ -130,18 +130,36 @@ class VerticalProgressBar(ProgressBarBase):
         self._x = anchor_position[0]
         self._y = anchor_position[1]
 
+        self._stroke = stroke
+
+        super().__init__(
+            anchor_position,
+            size,
+            progress,
+            bar_color,
+            outline_color,
+            0x444444,
+            border_thickness=stroke,
+            show_margin=True,
+            value_range=(0.0, 1.0),
+        )
+
+        self._draw_outline()
+
+    def _draw_outline(self):
+        """
+        Draws the outline (border) of the widget.
+        """
+
         # draw outline rectangle
         for _w in range(self._width):
-            for line in range(stroke):
+            for line in range(self._stroke):
                 self._bitmap[_w, line] = 1
                 self._bitmap[_w, self._height - 1 - line] = 1
         for _h in range(self._height):
-            for line in range(stroke):
+            for line in range(self._stroke):
                 self._bitmap[line, _h] = 1
                 self._bitmap[self._width - 1 - line, _h] = 1
-
-        # pylint: disable=unexpected-keyword-arg, no-value-for-parameter
-        super().__init__(self._bitmap, pixel_shader=self._palette, x=self._x, y=self._y)
 
     @property
     def progress(self):
@@ -162,8 +180,29 @@ class VerticalProgressBar(ProgressBarBase):
         assert value <= self._max, "Progress value may not be > maximum value"
         assert value >= self._min, "Progress value may not be < minimum value"
 
+        _old_value = self._progress_val
         _new_value = round(value / self._max, 2)
+        self._progress_val = _new_value
+        self.render(_old_value, _new_value, value)
+
+    def render(self, old_value, new_value, progress):
+        """
+        Does the work of actually creating the graphical representation of
+            the value (percentage, aka "progress") to be displayed.
+
+        :param old_value: The previously displayed value
+        :type old_value: float
+        :param new_value: The new value to display
+        :type new_value: float
+        :param progress: The value to display, as a percentage, represented
+            by a float from 0.0 to 1.0 (0% to 100%)
+        :type progress: float
+        :return: None
+        :rtype: None
+        """
         _padding = 1
+
+        print(f"Drawing a visual of progress value {progress}")
 
         if self._margin:
             _padding = 1
@@ -181,18 +220,18 @@ class VerticalProgressBar(ProgressBarBase):
             self.height - (2 * _padding) - _border_size
         )  # Count padding on the top and bottom
 
-        _prev_value_size = int(self._progress_val * _fill_width)
-        _new_value_size = int(_new_value * _fill_width)
+        _prev_value_size = int(old_value * _fill_width)
+        _new_value_size = int(new_value * _fill_width)
 
         # If we have *ANY* value other than "zero" (minimum), we should
         #   have at least one element showing
-        if _new_value_size == 0 and value > self._min:
+        if _new_value_size == 0 and new_value > self._min:
             _new_value_size = 1
 
         # Conversely, if we have *ANY* value other than 100% (maximum),
         #   we should NOT show a full bar.
 
-        if _new_value_size == _fill_width and value < self._max:
+        if _new_value_size == _fill_width and new_value < self._max:
             _new_value_size -= 1
 
         # Default values for increasing value
@@ -214,21 +253,13 @@ class VerticalProgressBar(ProgressBarBase):
         else:
             pass
 
-        # DEBUG
-        print(
-            f"Start: {_start}  End: {_end}  Incr: {_incr}  Size: {_new_value_size}  Color: {_color}"
-        )
-
         # Because range() is ( from-include, to-exclude )...
-
         _vert_start = _border_thickness + _padding
         _vert_end = _vert_start + _fill_height
 
         for h in range(_vert_start, _vert_end):
             for w in range(_start, _end, _incr):
                 self._bitmap[w, h] = _color
-
-        self._progress_val = _new_value
 
     @property
     def fill(self):
