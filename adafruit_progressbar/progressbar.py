@@ -117,12 +117,12 @@ class ProgressBar(ProgressBarBase):
         :type _progress_value: float
         :rtype None:
         """
-        #         print("Calling 'super().render()' before our own code")
-        #         super().render()
-        #        print("Calling own 'render()' code")
+
+        if _previous_value == _new_value:
+            return  # Do nothing if there's nothing to update
 
         if _previous_value > _new_value:
-            # uncolorize range from width*value+margin to width-margin
+            # Remove color in range from width*value+margin to width-margin
             # from right to left
             _prev_pixel = max(2, int(self.widget_width * self.progress - 2))
             _new_pixel = max(int(self.widget_width * _new_value - 2), 2)

@@ -1,5 +1,4 @@
-# Copyright (C) 2021 Hugo Dahl for Adafruit Industries
-# Copyright (c) 2020 Brent Rubell for Adafruit Industries
+# SPDX-FileCopyrightText: Copyright (c) 2020-2021 Brent Rubell for Adafruit Industries, Hugo Dahl
 #
 # SPDX-License-Identifier: MIT
 
@@ -175,7 +174,6 @@ class VerticalProgressBar(ProgressBarBase):
     def progress(self):
         """The percentage of the progress bar expressed as a
         floating point number.
-
         """
         return self._progress_val
 
@@ -210,7 +208,7 @@ class VerticalProgressBar(ProgressBarBase):
         :return: None
         :rtype: None
         """
-        _padding = 1
+        _padding = 0
 
         print(f"Drawing a visual of progress value {progress}")
 
@@ -230,8 +228,8 @@ class VerticalProgressBar(ProgressBarBase):
             self.height - (2 * _padding) - _border_size
         )  # Count padding on the top and bottom
 
-        _prev_value_size = int(old_value * _fill_width)
-        _new_value_size = int(new_value * _fill_width)
+        _prev_value_size = int(old_value * _fill_height)
+        _new_value_size = int(new_value * _fill_height)
 
         # If we have *ANY* value other than "zero" (minimum), we should
         #   have at least one element showing
@@ -241,7 +239,7 @@ class VerticalProgressBar(ProgressBarBase):
         # Conversely, if we have *ANY* value other than 100% (maximum),
         #   we should NOT show a full bar.
 
-        if _new_value_size == _fill_width and new_value < self._max:
+        if _new_value_size == _fill_height and new_value < self._max:
             _new_value_size -= 1
 
         # Default values for increasing value
@@ -259,23 +257,23 @@ class VerticalProgressBar(ProgressBarBase):
             _start = max(_prev_value_size, _start_offset)
             _end = max(_new_value_size, _start_offset)
         elif _prev_value_size == _new_value_size:
-            return  # No action to take. Return
+            return  # The pre-defined values above the start
+            # of the if block are already correct.
         else:
-            pass
+            pass  # No value change. Return.
 
         # Because range() is ( from-include, to-exclude )...
         _vert_start = _border_thickness + _padding
         _vert_end = _vert_start + _fill_height
 
-        for h in range(_vert_start, _vert_end):
-            for w in range(_start, _end, _incr):
+        for h in range(_start, _end, _incr):
+            for w in range(_start_offset, _fill_width):
                 self._bitmap[w, h] = _color
 
     @property
     def fill(self):
-        """The fill of the progress bar. Can be a hex value for a color or ``None`` for
-        transparent.
-
+        """The fill of the progress bar. Can be a hex value for a color or
+        ``None`` for transparent.
         """
         return self._palette[0]
 
@@ -291,9 +289,8 @@ class VerticalProgressBar(ProgressBarBase):
 
     @fill.setter
     def fill(self, color):
-        """Sets the fill of the progress bar. Can be a hex value for a color or ``None`` for
-        transparent.
-
+        """Sets the fill of the progress bar. Can be a hex value for a color or
+        ``None`` for transparent.
         """
         if color is None:
             self._palette[2] = 0

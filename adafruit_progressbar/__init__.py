@@ -140,6 +140,31 @@ class ProgressBarBase(displayio.TileGrid):
         return self._position[1]
 
     @property
+    def outline_color(self):
+        """Returns the currently configured value for the color of the
+        outline (border) of the widget."""
+        return self._palette[1]
+
+    @property
+    def fill(self):
+        """The fill of the progress bar. Can be a hex value for a color or ``None`` for
+        transparent.
+        """
+        return self._palette[0]
+
+    @fill.setter
+    def fill(self, color):
+        """Sets the fill of the progress bar. Can be a hex value for a color or ``None`` for
+        transparent.
+        """
+        if color is None:
+            self._palette[2] = 0
+            self._palette.make_transparent(0)
+        else:
+            self._palette[2] = color
+            self._palette.make_opaque(0)
+
+    @property
     def progress(self):
         """Gets the current displayed value of the widget."""
         return self._progress
@@ -165,7 +190,7 @@ class ProgressBarBase(displayio.TileGrid):
 
     @property
     def range(self):
-        """The range which can be handled as a tuple (min,max)"""
+        """The range which can be handled as a Tuple(min,max)"""
         return self._range
 
     @property
