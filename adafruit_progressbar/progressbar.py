@@ -22,11 +22,11 @@ Implementation Notes
 """
 
 # imports
-from . import ProgressBarBase
+from horizontalprogressbar import HorizontalProgressBar
 
 
 # pylint: disable=too-many-arguments, too-few-public-methods
-class ProgressBar(ProgressBarBase):
+class ProgressBar(HorizontalProgressBar):
     """A dynamic progress bar widget.
 
     :param x: The x-position of the top left corner.
@@ -61,7 +61,7 @@ class ProgressBar(ProgressBarBase):
         stroke=1,
     ):
 
-        # This needs to remain, since for backward compatibility, the default ProgressBar class
+        # This needs to remain for backward compatibility, the default ProgressBar class
         # should only be able to handle values of type "float"
         assert isinstance(progress, float), "Progress must be a floating point value."
 
@@ -78,31 +78,6 @@ class ProgressBar(ProgressBarBase):
         )
 
     #     _outline_color: int  # The colour used for the border of the widget
-
-    @property
-    def outline_color(self):
-        """Returns the currently configured value for the color of the
-        outline (border) of the widget."""
-        return self._outline_color
-
-    @property
-    def fill(self):
-        """The fill of the progress bar. Can be a hex value for a color or ``None`` for
-        transparent.
-        """
-        return self._palette[0]
-
-    @fill.setter
-    def fill(self, color):
-        """Sets the fill of the progress bar. Can be a hex value for a color or ``None`` for
-        transparent.
-        """
-        if color is None:
-            self._palette[2] = 0
-            self._palette.make_transparent(0)
-        else:
-            self._palette[2] = color
-            self._palette.make_opaque(0)
 
     def render(self, _previous_value, _new_value, _progress_value) -> None:
         """

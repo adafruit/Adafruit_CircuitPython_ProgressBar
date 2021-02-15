@@ -24,19 +24,7 @@ Implementation Notes
 
 # imports
 import displayio
-from . import ProgressBarBase
-
-
-# pylint: disable=too-few-public-methods
-class FillDirection(enumerate):
-    """Enums to define the direction in which the progressbar
-    should fill"""
-
-    LEFT_TO_RIGHT = 0
-    DEFAULT = LEFT_TO_RIGHT
-    BOTTOM_UP = 1
-    TOP_DOWN = 2
-    RIGHT_TO_LEFT = 3
+from . import ProgressBarBase, FillDirection
 
 
 # pylint: disable=too-many-arguments, too-few-public-methods, too-many-instance-attributes
@@ -100,6 +88,7 @@ class VerticalProgressBar(ProgressBarBase):
         progress=0.0,
         bar_color=0x00FF00,
         outline_color=0xFFFFFF,
+        fill_color=None,
         stroke=1,
         margin=False,
         direction=FillDirection.DEFAULT,
@@ -132,10 +121,6 @@ class VerticalProgressBar(ProgressBarBase):
         self._bar_width = self._width
         self._bar_height = self._height
 
-        self._progress_val = 0.0
-        self.progress = self._progress_val
-        self.progress = progress
-
         self._x = anchor_position[0]
         self._y = anchor_position[1]
 
@@ -147,70 +132,31 @@ class VerticalProgressBar(ProgressBarBase):
             progress,
             bar_color,
             outline_color,
-            0x444444,
+            fill_color,
             border_thickness=stroke,
             show_margin=True,
             value_range=(0.0, 1.0),
         )
 
-        self._draw_outline()
-
-    def _draw_outline(self):
-        """
-        Draws the outline (border) of the widget.
-        """
-
-        # draw outline rectangle
-        for _w in range(self._width):
-            for line in range(self._stroke):
-                self._bitmap[_w, line] = 1
-                self._bitmap[_w, self._height - 1 - line] = 1
-        for _h in range(self._height):
-            for line in range(self._stroke):
-                self._bitmap[line, _h] = 1
-                self._bitmap[self._width - 1 - line, _h] = 1
-
-    @property
-    def progress(self):
-        """The percentage of the progress bar expressed as a
-        floating point number.
-        """
-        return self._progress_val
-
     # pylint: disable=too-many-locals
-    @progress.setter
-    def progress(self, value):
-        """Draws the progress bar
-
-        :param value: Progress bar value.
-        :type value: float
-        """
-        assert value <= self._max, "Progress value may not be > maximum value"
-        assert value >= self._min, "Progress value may not be < minimum value"
-
-        _old_value = self._progress_val
-        _new_value = round(value / self._max, 2)
-        self._progress_val = _new_value
-        self.render(_old_value, _new_value, value)
-
-    def render(self, old_value, new_value, progress):
+    def render(self, _old_value, _new_value, _progress_value):
         """
         Does the work of actually creating the graphical representation of
             the value (percentage, aka "progress") to be displayed.
 
-        :param old_value: The previously displayed value
-        :type old_value: float
-        :param new_value: The new value to display
-        :type new_value: float
-        :param progress: The value to display, as a percentage, represented
+        :param _old_value: The previously displayed value
+        :type _old_value: float
+        :param _new_value: The new value to display
+        :type _new_value: float
+        :param _progress_value: The value to display, as a percentage, represented
             by a float from 0.0 to 1.0 (0% to 100%)
-        :type progress: float
+        :type _progress_value: float
         :return: None
         :rtype: None
         """
         _padding = 0
 
-        print(f"Drawing a visual of progress value {progress}")
+        print(f"Drawing a visual of progress value {_progress_value}")
 
         if self._margin:
             _padding = 1
@@ -222,24 +168,24 @@ class VerticalProgressBar(ProgressBarBase):
         # in both directions (left-to-right and top-to-bottom)
 
         _fill_width = (
-            self.width - (2 * _padding) - _border_size
+            self.widget_width - (2 * _padding) - _border_size
         )  # Count padding on left and right
         _fill_height = (
-            self.height - (2 * _padding) - _border_size
+            self.widget_height - (2 * _padding) - _border_size
         )  # Count padding on the top and bottom
 
-        _prev_value_size = int(old_value * _fill_height)
-        _new_value_size = int(new_value * _fill_height)
+        _prev_value_size = int(_old_value * _fill_height)
+        _new_value_size = int(_new_value * _fill_height)
 
         # If we have *ANY* value other than "zero" (minimum), we should
         #   have at least one element showing
-        if _new_value_size == 0 and new_value > self._min:
+        if _new_value_size == 0 and _new_value > self._min:
             _new_value_size = 1
 
         # Conversely, if we have *ANY* value other than 100% (maximum),
         #   we should NOT show a full bar.
 
-        if _new_value_size == _fill_height and new_value < self._max:
+        if _new_value_size == _fill_height and _new_value < self._max:
             _new_value_size -= 1
 
         # Default values for increasing value
@@ -269,32 +215,3 @@ class VerticalProgressBar(ProgressBarBase):
         for h in range(_start, _end, _incr):
             for w in range(_start_offset, _fill_width):
                 self._bitmap[w, h] = _color
-
-    @property
-    def fill(self):
-        """The fill of the progress bar. Can be a hex value for a color or
-        ``None`` for transparent.
-        """
-        return self._palette[0]
-
-    @property
-    def width(self):
-        """The width of the progress bar. In pixels, includes the border."""
-        return self._bar_width
-
-    @property
-    def height(self):
-        """The height of the progress bar. In pixels, includes the border."""
-        return self._bar_height
-
-    @fill.setter
-    def fill(self, color):
-        """Sets the fill of the progress bar. Can be a hex value for a color or
-        ``None`` for transparent.
-        """
-        if color is None:
-            self._palette[2] = 0
-            self._palette.make_transparent(0)
-        else:
-            self._palette[2] = color
-            self._palette.make_opaque(0)

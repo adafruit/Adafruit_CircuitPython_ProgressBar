@@ -25,6 +25,18 @@ Implementation Notes
 import displayio
 
 
+# pylint: disable=too-few-public-methods
+class FillDirection(enumerate):
+    """Enums to define the direction in which the progressbar
+    should fill"""
+
+    LEFT_TO_RIGHT = 0
+    DEFAULT = LEFT_TO_RIGHT
+    BOTTOM_UP = 1
+    TOP_DOWN = 2
+    RIGHT_TO_LEFT = 3
+
+
 class ProgressBarBase(displayio.TileGrid):
     """The base class for dynamic progress bar widgets.
 
@@ -181,7 +193,7 @@ class ProgressBarBase(displayio.TileGrid):
         :param float value: The new value which should be displayed by the progress
                             bar. Must be between 0.0-1.0
         """
-        _old_value = self._progress
+        _old_value = self.progress
         # If we're using floats, from 0.0 to 1.0, using 4 decimal places allows us to handle values
         # as precise as 0.23456, which evaluates to a percentage value of 23.45% (with rounding)
         self._progress = round(value, 4)
