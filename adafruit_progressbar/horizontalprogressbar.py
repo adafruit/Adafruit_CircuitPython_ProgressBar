@@ -48,8 +48,6 @@ class HorizontalProgressBar(ProgressBarBase):
     :type anchor_position: Tuple[int, int]
     :param size: The size in (width, height) of the progress bar
     :type size: Tuple[int, int]
-    :param progress: The percentage of the progress bar.
-    :type progress: float
     :param bar_color: The color of the progress bar. Can be a hex
         value for color.
     :param outline_color: The outline of the progress bar. Can be a hex
@@ -85,16 +83,16 @@ class HorizontalProgressBar(ProgressBarBase):
         super().__init__(
             anchor_position,
             size,
-            progress,
+            value,
             bar_color,
             outline_color,
             fill_color,
-            value,
-            border_thickness=border_thickness,
-            show_margin=show_margin,
-            value_range=(min_value, max_value),
+            border_thickness,
+            show_margin,
+            (min_value, max_value),
         )
 
+    # pylint: disable=too-many-locals
     def render(self, _previous_value, _new_value, _progress_value) -> None:
         """
         The rendering mechanism to display the newly set value.
@@ -109,20 +107,63 @@ class HorizontalProgressBar(ProgressBarBase):
         :rtype None:
         """
 
-        if _previous_value == _new_value:
-            return  # Do nothing if there's nothing to update
+        _padding = self.border_thickness
+
+        if self._margin:
+            _padding += 1
+
+        _border_thickness = self.border_thickness
+        _border_size = (
+            _border_thickness * 2
+        )  # Size of the border on both sides of the control (1),
+        # in both directions (left-to-right and top-to-bottom)
+
+        _fill_width = (
+            self.widget_width - (2 * _padding) - _border_size
+        )  # Count padding on left and right
+        _fill_height = (
+            self.widget_height - (2 * _padding) - _border_size
+        )  # Count padding on the top and bottom
+
+        _prev_prog = float(_previous_value - self.minimum) / (
+            abs(self.minimum) + abs(self.maximum)
+        )
+
+        print(f"Progress: from {_prev_prog} to {_progress_value}")
+        _prev_value_size = int(_prev_prog * _fill_height)
+        _new_value_size = int(_progress_value * _fill_height)
+
+        # If we have *ANY* value other than "zero" (minimum), we should
+        #   have at least one element showing
+        if _new_value_size == 0 and _new_value > self.minimum:
+            _new_value_size = 1
+
+        # Conversely, if we have *ANY* value other than 100% (maximum),
+        #   we should NOT show a full bar.
+
+        if _new_value_size == _fill_height and _new_value < self.maximum:
+            _new_value_size -= 1
+
+        # Default values for increasing value
+        _color = 2
+        _incr = 1
+        _start_offset = _padding + _border_thickness
+        _start = max(_prev_value_size, _start_offset)
+        _end = max(_new_value_size, 0) + _start_offset
 
         if _previous_value > _new_value:
+            print("prev > new")
             # Remove color in range from width*value+margin to width-margin
             # from right to left
-            _prev_pixel = max(2, int(self.widget_width * self.progress - 2))
-            _new_pixel = max(int(self.widget_width * _new_value - 2), 2)
+            _prev_pixel = max(2, int(self.widget_width * _previous_value - _padding))
+            _new_pixel = max(int(self.widget_width * _new_value - _padding), 2)
             for _w in range(_prev_pixel, _new_pixel - 1, -1):
                 for _h in range(2, self.widget_height - 2):
                     self._bitmap[_w, _h] = 0
         else:
+            print("prev <= new")
             # fill from the previous x pixel to the new x pixel
-            _prev_pixel = max(2, int(self.widget_width * self.progress - 3))
+            _prev_pixel = max(2, int(self.widget_width * _previous_value - 3))
             _new_pixel = min(
                 int(self.widget_width * _new_value - 2),
                 int(self.widget_width * 1.0 - 3),

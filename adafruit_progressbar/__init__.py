@@ -44,10 +44,6 @@ class ProgressBarBase(displayio.TileGrid):
     :type position: Tuple[int, int]
     :param size: The size (width, height) of the progress bar
     :type size: Tuple[int, int]
-    :param start_value: The beginning value of the progress bar. This value
-                              is displayed when the progress bar is first visible,
-                              if it hasn't been updated.
-    :type start_value: float
     :param bar_color: The color of the bar representing the value. This can
                             be a hexadecimal value for color (0x224466).
                             Default: 0x00FF00 (Solid green)
@@ -74,12 +70,11 @@ class ProgressBarBase(displayio.TileGrid):
     :type value_range: Tuple[int, int] or Tuple[float, float]
     """
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments, too-many-instance-attributes
     def __init__(
         self,
         position,
         size,
-        start_value=0.0,
         value=0,
         bar_color=0x00FF00,
         outline_color=0xFFFFFF,
@@ -91,8 +86,7 @@ class ProgressBarBase(displayio.TileGrid):
 
         self._widget_size = size
         self._position = position
-        self._progress = start_value
-        print(f"Size: {size} - WS: {self.widget_size}")
+
         self._bitmap = displayio.Bitmap(size[0], size[1], 3)
         self._palette = displayio.Palette(3)
         self._palette[0] = fill_color
@@ -101,7 +95,17 @@ class ProgressBarBase(displayio.TileGrid):
         self._border_thickness = border_thickness
         self._show_margin = show_margin
         self._range = value_range
-        self._value = value
+        self._progress = 0.0
+
+        # Setup value and old_value to handle the change to the new
+        # initial value later.
+        self._value = self.minimum
+        self._old_value = self.minimum
+
+        self._margin = 0
+
+        if self._show_margin:
+            self._margin = 1
 
         super().__init__(
             self._bitmap,
@@ -111,6 +115,8 @@ class ProgressBarBase(displayio.TileGrid):
         )
 
         self._draw_outline()
+        self.render(self.minimum, self.minimum + 1, 0)
+        self.value = value
 
     #     _bitmap: displayio.Bitmap  # The bitmap used for the bar/value
     #     _position: (int, int)  # The (x,y) coordinates of the top-left corner
@@ -137,11 +143,6 @@ class ProgressBarBase(displayio.TileGrid):
     def widget_height(self):
         """The total height of the widget, in pixels. Includes the border and margin."""
         return self.widget_size[1]
-
-    @property
-    def _outline_color(self):
-        """The colour of the border/outline of the widget"""
-        return self._palette[1]
 
     @property
     def x(self):
@@ -188,6 +189,15 @@ class ProgressBarBase(displayio.TileGrid):
 
     @value.setter
     def value(self, value):
+        """Sets the current value of the progress within the min-max range
+
+        :param value: The new value for the progress status
+        :type value: int/float
+        """
+        # Save off the previous value, so we can pass it in the
+        # call to "Render"
+        print(f"Updating value from {self._value} to {value}")
+        self._old_value = self._value
         self._value = value
         # Convert value to float since we may be dealing with
         # integer types, and we can't work with integer division
@@ -210,15 +220,17 @@ class ProgressBarBase(displayio.TileGrid):
     def progress(self, value):
         """The current displayed value of the widget.
 
-        :param float value: The new value which should be displayed by the progress
+        :param value: The new value which should be displayed by the progress
                             bar. Must be between 0.0-1.0
+        :type value: float
         """
-        _old_value = self.progress
         # If we're using floats, from 0.0 to 1.0, using 4 decimal places allows us to handle values
         # as precise as 0.23456, which evaluates to a percentage value of 23.45% (with rounding)
         self._progress = round(value, 4)
-        print(f"Calling render() with ({_old_value}, {self.progress}, {self.progress})")
-        self.render(_old_value, self.progress, self.progress)
+        print(
+            f"Calling render() with ({self._old_value}, {self.value}, {self.progress})"
+        )
+        self.render(self._old_value, self.value, self.progress)
 
     @property
     def range(self):

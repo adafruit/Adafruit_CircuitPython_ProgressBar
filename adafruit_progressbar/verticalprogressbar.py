@@ -84,7 +84,6 @@ class VerticalProgressBar(ProgressBarBase):
         size,
         min_value=0,
         max_value=100,
-        progress=0.0,
         value=0,
         bar_color=0x00FF00,
         outline_color=0xFFFFFF,
@@ -129,7 +128,6 @@ class VerticalProgressBar(ProgressBarBase):
         super().__init__(
             anchor_position,
             size,
-            progress,
             value,
             bar_color,
             outline_color,
@@ -155,14 +153,12 @@ class VerticalProgressBar(ProgressBarBase):
         :return: None
         :rtype: None
         """
-        _padding = 0
-
-        print(f"Drawing a visual of progress value {_progress_value}")
+        _padding = self._border_thickness
 
         if self._margin:
-            _padding = 1
+            _padding += 1
 
-        _border_thickness = 1
+        _border_thickness = self.border_thickness
         _border_size = (
             _border_thickness * 2
         )  # Size of the border on both sides of the control (1),

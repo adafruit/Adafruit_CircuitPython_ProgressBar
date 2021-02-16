@@ -37,8 +37,6 @@ class ProgressBar(HorizontalProgressBar):
     :type width: int
     :param height: The height of the progress bar.
     :type height: int
-    :param progress: The percentage of the progress bar.
-    :type progress: float
     :param bar_color: The color of the progress bar. Can be a hex
         value for color.
     :param outline_color: The outline of the progress bar. Can be a hex
@@ -70,8 +68,7 @@ class ProgressBar(HorizontalProgressBar):
             (width, height),
             0,
             100,
-            progress,
-            0,
+            (progress * 100),  # Progress vs. max above
             bar_color,
             outline_color,
             0x000000,
