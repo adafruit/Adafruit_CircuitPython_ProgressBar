@@ -12,22 +12,88 @@ Dynamic progress bar widget for CircuitPython displays
 """
 
 # import displayio
-from . import ProgressBarBase  # , FillDirection
+from . import ProgressBarBase, FillDirection
 
 
 class HorizontalProgressBar(ProgressBarBase):
-    """
-    A progress bar that goes horizontally.
+    """A dynamic progress bar widget.
+
+    The anchor position is the position where the control would start if it
+    were being read visually or on paper, where the (0, 0) position is
+    the lower-left corner for ascending progress bars (fills from the bottom to
+    to the top in vertical bars, or from the left to the right in horizontal
+    progress bars), upper-left corner for descending progress bars (fills from
+    the top to the bottom).
+
+    Using the diagrams below, the bar will fill in the following directions::
+
+                         -----------------------------
+                         | Horizontal   | Vertical   |
+        ----------------------------------------------
+        | Ascending      |  1-3 to 2-4 |  3-4 to 1-2 |
+        ----------------------------------------------
+        | Descending     |  2-4 to 1-3 |  1-2 to 3-4 |
+        ----------------------------------------------
+
+        Vertical            Horizontal
+
+        1--2                1-----------------------2
+        |  |                |                       |
+        |  |                |                       |
+        |  |                3-----------------------4
+        |  |
+        3--4
+
+    :param anchor_position: The anchor coordinates of the progress bar.
+    :type anchor_position: Tuple[int, int]
+    :param size: The size in (width, height) of the progress bar
+    :type size: Tuple[int, int]
+    :param progress: The percentage of the progress bar.
+    :type progress: float
+    :param bar_color: The color of the progress bar. Can be a hex
+        value for color.
+    :param outline_color: The outline of the progress bar. Can be a hex
+        value for color.
+    :type outline_color: int
+    :param border_thickness: Used for the outline_color
+    :type border_thickness: int
+    :param show_margin: Whether or not to have a margin between the border and
+        the fill, or not.
+    :type show_margin: bool
+    :param direction: The direction of the fill
+    :type direction: FillDirection
+
     """
 
-    def __init__(self):
-        """
-        Get stuff, horizontally!
-        :param args:
-        :param kwargs:
-        """
+    # pylint: disable=bad-option-value, unused-argument, too-many-arguments
+    def __init__(
+        self,
+        anchor_position,
+        size,
+        min_value=0,
+        max_value=100,
+        progress=0.0,
+        value=0,
+        bar_color=0x00FF00,
+        outline_color=0xFFFFFF,
+        fill_color=0x444444,
+        border_thickness=1,
+        show_margin=True,
+        direction=FillDirection.DEFAULT,
+    ):
 
-        super().__init__((0, 0), (100, 20), 0.0)
+        super().__init__(
+            anchor_position,
+            size,
+            progress,
+            bar_color,
+            outline_color,
+            fill_color,
+            value,
+            border_thickness=border_thickness,
+            show_margin=show_margin,
+            value_range=(min_value, max_value),
+        )
 
     def render(self, _previous_value, _new_value, _progress_value) -> None:
         """

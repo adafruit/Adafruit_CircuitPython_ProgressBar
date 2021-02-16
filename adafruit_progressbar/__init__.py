@@ -80,12 +80,13 @@ class ProgressBarBase(displayio.TileGrid):
         position,
         size,
         start_value=0.0,
+        value=0,
         bar_color=0x00FF00,
         outline_color=0xFFFFFF,
         fill_color=0x000000,
         border_thickness=1,
         show_margin=False,
-        value_range=(0.0, 1.0),
+        value_range=(0, 100),
     ):
 
         self._widget_size = size
@@ -100,6 +101,7 @@ class ProgressBarBase(displayio.TileGrid):
         self._border_thickness = border_thickness
         self._show_margin = show_margin
         self._range = value_range
+        self._value = value
 
         super().__init__(
             self._bitmap,
@@ -175,6 +177,24 @@ class ProgressBarBase(displayio.TileGrid):
         else:
             self._palette[2] = color
             self._palette.make_opaque(0)
+
+    @property
+    def value(self):
+        """
+        The current value of the control, used to determine its progress/ratio
+        :return: int/float
+        """
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value = value
+        # Convert value to float since we may be dealing with
+        # integer types, and we can't work with integer division
+        # to get a ratio (position) of "value" within range.
+        self.progress = (float(value - self._range[0])) / (
+            abs(self._range[0]) + abs(self._range[1])
+        )
 
     @property
     def progress(self):

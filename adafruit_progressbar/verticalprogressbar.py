@@ -9,8 +9,7 @@
 Dynamic progress bar widget for CircuitPython displays
 
 
-* Author(s): Brent Rubell
-                Hugo Dahl
+* Author(s): Brent Rubell, Hugo Dahl
 
 Implementation Notes
 --------------------
@@ -40,13 +39,13 @@ class VerticalProgressBar(ProgressBarBase):
 
     Using the diagrams below, the bar will fill in the following directions::
 
-                     -----------------------------
-                     | Horizontal   | Vertical   |
-    ----------------------------------------------
-    | Ascending      |  1-3 to 2-4 |  3-4 to 1-2 |
-    ----------------------------------------------
-    | Descending     |  2-4 to 1-3 |  1-2 to 3-4 |
-    ----------------------------------------------
+                         -----------------------------
+                         | Horizontal   | Vertical   |
+        ----------------------------------------------
+        | Ascending      |  1-3 to 2-4 |  3-4 to 1-2 |
+        ----------------------------------------------
+        | Descending     |  2-4 to 1-3 |  1-2 to 3-4 |
+        ----------------------------------------------
 
         Vertical            Horizontal
 
@@ -86,9 +85,10 @@ class VerticalProgressBar(ProgressBarBase):
         min_value=0,
         max_value=100,
         progress=0.0,
+        value=0,
         bar_color=0x00FF00,
         outline_color=0xFFFFFF,
-        fill_color=None,
+        fill_color=0x444444,
         stroke=1,
         margin=False,
         direction=FillDirection.DEFAULT,
@@ -130,12 +130,13 @@ class VerticalProgressBar(ProgressBarBase):
             anchor_position,
             size,
             progress,
+            value,
             bar_color,
             outline_color,
             fill_color,
             border_thickness=stroke,
             show_margin=True,
-            value_range=(0.0, 1.0),
+            value_range=(min_value, max_value),
         )
 
     # pylint: disable=too-many-locals

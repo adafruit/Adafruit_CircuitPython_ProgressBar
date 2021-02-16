@@ -22,7 +22,7 @@ Implementation Notes
 """
 
 # imports
-from horizontalprogressbar import HorizontalProgressBar
+from adafruit_progressbar.horizontalprogressbar import HorizontalProgressBar
 
 
 # pylint: disable=too-many-arguments, too-few-public-methods
@@ -68,49 +68,13 @@ class ProgressBar(HorizontalProgressBar):
         super().__init__(
             (x, y),
             (width, height),
+            0,
+            100,
             progress,
+            0,
             bar_color,
             outline_color,
-            0x444444,
+            0x000000,
             border_thickness=stroke,
             show_margin=True,
-            value_range=(0.0, 1.0),
         )
-
-    #     _outline_color: int  # The colour used for the border of the widget
-
-    def render(self, _previous_value, _new_value, _progress_value) -> None:
-        """
-        The rendering mechanism to display the newly set value.
-
-        :param _previous_value:  The value from which we are updating
-        :type _previous_value: object
-        :param _new_value: The value to which we are updating
-        :type _new_value: object
-        :param _progress_value: The value of the progress, or ratio between the new value and the
-            maximum value
-        :type _progress_value: float
-        :rtype None:
-        """
-
-        if _previous_value == _new_value:
-            return  # Do nothing if there's nothing to update
-
-        if _previous_value > _new_value:
-            # Remove color in range from width*value+margin to width-margin
-            # from right to left
-            _prev_pixel = max(2, int(self.widget_width * self.progress - 2))
-            _new_pixel = max(int(self.widget_width * _new_value - 2), 2)
-            for _w in range(_prev_pixel, _new_pixel - 1, -1):
-                for _h in range(2, self.widget_height - 2):
-                    self._bitmap[_w, _h] = 0
-        else:
-            # fill from the previous x pixel to the new x pixel
-            _prev_pixel = max(2, int(self.widget_width * self.progress - 3))
-            _new_pixel = min(
-                int(self.widget_width * _new_value - 2),
-                int(self.widget_width * 1.0 - 3),
-            )
-            for _w in range(_prev_pixel, _new_pixel + 1):
-                for _h in range(2, self.widget_height - 2):
-                    self._bitmap[_w, _h] = 2
