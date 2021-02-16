@@ -209,6 +209,8 @@ class VerticalProgressBar(ProgressBarBase):
         _vert_start = _border_thickness + _padding
         _vert_end = _vert_start + _fill_height
 
-        for h in range(_start, _end, _incr):
-            for w in range(_start_offset, _fill_width):
+        print(f"Filling from {_vert_start} to {_vert_end}")
+
+        for h in range(_vert_start, _vert_end, _incr):
+            for w in range(3, 10):
                 self._bitmap[w, h] = _color

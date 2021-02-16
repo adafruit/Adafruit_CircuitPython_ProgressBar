@@ -70,7 +70,6 @@ class HorizontalProgressBar(ProgressBarBase):
         size,
         min_value=0,
         max_value=100,
-        progress=0.0,
         value=0,
         bar_color=0x00FF00,
         outline_color=0xFFFFFF,
