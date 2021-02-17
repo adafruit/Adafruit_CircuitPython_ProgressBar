@@ -249,7 +249,9 @@ class ProgressBarBase(displayio.TileGrid):
 
     def _draw_outline(self):
         """Draws the outline (border) of the progressbar, with a thickness value
-        from self.border_thickness."""
+        from self.border_thickness.
+        :rtype None:
+        """
         stroke = self.border_thickness
 
         # draw outline rectangle
@@ -261,6 +263,47 @@ class ProgressBarBase(displayio.TileGrid):
             for line in range(stroke):
                 self._bitmap[line, _h] = 1
                 self._bitmap[self.widget_width - 1 - line, _h] = 1
+
+    def value_span(self):
+        """Get the total number of "values" between the
+        minimum and maximum.
+        :rtype int:
+        """
+
+        return abs(self.minimum) + abs(self.maximum)
+
+    def fill_width(self):
+        """Returns the amount of horizontal space within the widget
+        which can be used for value display. This is typically the
+        width of the widget as defined, minus any visually reserved space.
+        :return int:
+        """
+
+        return self.widget_width - self._get_fill_border_size()
+
+    def fill_height(self):
+        """Returns the amount of vertical space within the widget
+        which can be used for value display. This is typically the
+        width of the widget as defined, minus any visually reserved
+        space.
+        :return int:
+        """
+
+        return self.widget_height - self._get_fill_border_size()
+
+    def _get_fill_border_size(self):
+        """Determines any visual space reserved for the widget
+        based on the defined border thickness, and whether a margin
+        should be placed between the border and the bar.
+        The value is calculated as (2 x border_thickness) minus
+        (2 x margin_size). The value for margin_size is either 0 (zero)
+        or 1 (one) depending on the value of show_margin when the
+        widget was created.
+        :return int:
+        """
+
+        _margin_value = 1 if self._margin else 0
+        return (2 * self.border_thickness) + (2 * _margin_value)
 
     def render(self, _old_value, _new_value, _progress_value) -> None:
         """The method called when the display needs to be updated. This method

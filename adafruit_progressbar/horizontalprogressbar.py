@@ -129,8 +129,8 @@ class HorizontalProgressBar(ProgressBarBase):
         )
 
         print(f"Progress: from {_prev_prog} to {_progress_value}")
-        _prev_value_size = int(_prev_prog * _fill_height)
-        _new_value_size = int(_progress_value * _fill_height)
+        _prev_value_size = int(_prev_prog * _fill_width)
+        _new_value_size = int(_progress_value * _fill_width)
 
         # If we have *ANY* value other than "zero" (minimum), we should
         #   have at least one element showing

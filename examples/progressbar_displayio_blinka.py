@@ -45,10 +45,16 @@ splash.append(horizontal_bar)
 vertical_bar = VerticalProgressBar((200, 30), (32, 180))
 splash.append(vertical_bar)
 
+_incr = 1
 # Must check display.running in the main loop!
-while display.running and vertical_bar.value < 100:
+while display.running:
     # progress_bar.progress += 0.01
-    vertical_bar.value += 1
+    vertical_bar.value += _incr
+    if (
+        vertical_bar.value >= vertical_bar.maximum
+        or vertical_bar.value <= vertical_bar.minimum
+    ):
+        _incr *= -1
     # horizontal_bar.value += 1
     display.refresh()
-    time.sleep(0.5)
+    time.sleep(0.25)
