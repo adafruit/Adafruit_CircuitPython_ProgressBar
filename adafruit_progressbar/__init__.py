@@ -196,7 +196,6 @@ class ProgressBarBase(displayio.TileGrid):
         """
         # Save off the previous value, so we can pass it in the
         # call to "Render"
-        print(f"Updating value from {self._value} to {value}")
         self._old_value = self._value
         self._value = value
         # Convert value to float since we may be dealing with
@@ -227,9 +226,6 @@ class ProgressBarBase(displayio.TileGrid):
         # If we're using floats, from 0.0 to 1.0, using 4 decimal places allows us to handle values
         # as precise as 0.23456, which evaluates to a percentage value of 23.45% (with rounding)
         self._progress = round(value, 4)
-        print(
-            f"Calling render() with ({self._old_value}, {self.value}, {self.progress})"
-        )
         self.render(self._old_value, self.value, self.progress)
 
     @property
@@ -302,8 +298,14 @@ class ProgressBarBase(displayio.TileGrid):
         :return int:
         """
 
-        _margin_value = 1 if self._margin else 0
-        return (2 * self.border_thickness) + (2 * _margin_value)
+        return (2 * self.border_thickness) + (2 * self.margin_size)
+
+    @property
+    def margin_size(self):
+        """Returns the size of the margin on a single side of the display
+        :return int:
+        """
+        return 1 if self._margin else 0
 
     def render(self, _old_value, _new_value, _progress_value) -> None:
         """The method called when the display needs to be updated. This method

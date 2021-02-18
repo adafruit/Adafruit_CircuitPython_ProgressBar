@@ -43,11 +43,34 @@ horizontal_bar = HorizontalProgressBar(
 )
 splash.append(horizontal_bar)
 vertical_bar = VerticalProgressBar((200, 30), (32, 180))
+vertical_bar1 = VerticalProgressBar((260, 30), (32, 180), min_value=-40, max_value=130)
 splash.append(vertical_bar)
+splash.append(vertical_bar1)
+
+vals = [99, 100, 99, 1, 0, 1]
+vals2 = [120, 130, 129, -20, -39, -40, -28]
+delay = 3
 
 _incr = 1
 # Must check display.running in the main loop!
 while display.running:
+
+    for val in vals:
+        print(f"Setting value to {val}")
+        vertical_bar.value = val
+        display.refresh()
+        time.sleep(delay)
+
+    for val in vals2:
+        print(f"Setting value to {val}")
+        vertical_bar1.value = val
+        display.refresh()
+        time.sleep(delay)
+
+    break
+
+    # pylint: disable=unreachable
+
     # progress_bar.progress += 0.01
     vertical_bar.value += _incr
     if (
@@ -57,4 +80,4 @@ while display.running:
         _incr *= -1
     # horizontal_bar.value += 1
     display.refresh()
-    time.sleep(0.25)
+    time.sleep(0.10)

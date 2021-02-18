@@ -128,7 +128,6 @@ class HorizontalProgressBar(ProgressBarBase):
             abs(self.minimum) + abs(self.maximum)
         )
 
-        print(f"Progress: from {_prev_prog} to {_progress_value}")
         _prev_value_size = int(_prev_prog * _fill_width)
         _new_value_size = int(_progress_value * _fill_width)
 

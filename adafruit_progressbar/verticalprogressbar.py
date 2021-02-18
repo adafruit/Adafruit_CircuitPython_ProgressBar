@@ -154,11 +154,10 @@ class VerticalProgressBar(ProgressBarBase):
         :rtype: None
         """
 
+        _toggle = False
+
         _fill_height = self.fill_height()
         _fill_width = self.fill_width()
-
-        print(f"Widget dimensions: {self.widget_width} x {self.widget_height}")
-        print(f"Fill dimensions: {_fill_width} x {_fill_height}")
 
         _prev_ratio = _old_value / self.value_span()
         _new_ratio = _new_value / self.value_span()
@@ -169,30 +168,29 @@ class VerticalProgressBar(ProgressBarBase):
         # If we have *ANY* value other than "zero" (minimum), we should
         #   have at least one element showing
         if _new_value_size == 0 and _new_value > self._min:
+            print("Padding size for non-zero value size")
             _new_value_size = 1
 
         # Conversely, if we have *ANY* value other than 100% (maximum),
         #   we should NOT show a full bar.
-
         if _new_value_size == self.fill_height() and _new_value < self._max:
+            print("Shortening size for non-max value size")
             _new_value_size -= 1
 
-        _render_offset = 2  # TODO: Calculate in the same way as with "fill_width"
+        _render_offset = self.margin_size + self.border_thickness
 
         # Default values for increasing value
         _color = 2
         _incr = 1
-        _start_offset = _render_offset
-        _start = max(_prev_value_size, _start_offset)
-        _end = max(_new_value_size, 0) + _start_offset
+        _start = max(_prev_value_size + _render_offset, _render_offset)
+        _end = max(_new_value_size, 0) + _render_offset
 
         if _prev_value_size > _new_value_size:
             # Override defaults to be decreasing
             _color = 0  # Clear
             _incr = -1  # Iterate range downward
-            _start_offset = _render_offset
-            _start = max(_prev_value_size, _start_offset)
-            _end = max(_new_value_size, _start_offset)
+            _start = max(_prev_value_size + _render_offset, _render_offset)
+            _end = max(_new_value_size + _render_offset, _render_offset) - 1
         elif _prev_value_size == _new_value_size:
             return  # The pre-defined values above the start
             # of the if block are already correct.
@@ -200,5 +198,5 @@ class VerticalProgressBar(ProgressBarBase):
             pass  # No value change. Return.
 
         for h in range(_start, _end, _incr):
-            for w in range(_render_offset, _fill_width + _render_offset):
+            for w in range(_render_offset, _render_offset + _fill_width):
                 self._bitmap[w, h] = _color
