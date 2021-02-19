@@ -159,8 +159,8 @@ class VerticalProgressBar(ProgressBarBase):
         _fill_height = self.fill_height()
         _fill_width = self.fill_width()
 
-        _prev_ratio = _old_value / self.value_span()
-        _new_ratio = _new_value / self.value_span()
+        _prev_ratio = (float(_old_value - self.minimum)) / (self.maximum - self.minimum)
+        _new_ratio = (float(_new_value - self.minimum)) / (self.maximum - self.minimum)
 
         _prev_value_size = int(_prev_ratio * _fill_height)
         _new_value_size = int(_new_ratio * _fill_height)

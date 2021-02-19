@@ -84,6 +84,10 @@ class ProgressBarBase(displayio.TileGrid):
         value_range=(0, 100),
     ):
 
+        assert (
+            value_range[0] < value_range[1]
+        ), "The minimum value must be less than the maximum value"
+
         self._widget_size = size
         self._position = position
 
@@ -259,14 +263,6 @@ class ProgressBarBase(displayio.TileGrid):
             for line in range(stroke):
                 self._bitmap[line, _h] = 1
                 self._bitmap[self.widget_width - 1 - line, _h] = 1
-
-    def value_span(self):
-        """Get the total number of "values" between the
-        minimum and maximum.
-        :rtype int:
-        """
-
-        return abs(self.minimum) + abs(self.maximum)
 
     def fill_width(self):
         """Returns the amount of horizontal space within the widget
