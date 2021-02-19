@@ -184,6 +184,6 @@ class VerticalProgressBar(ProgressBarBase):
             _start = max(_prev_value_size + _render_offset, _render_offset)
             _end = max(_new_value_size + _render_offset, _render_offset) - 1
 
-        for h in range(_start, _end, _incr):
-            for w in range(_render_offset, _render_offset + self.fill_width()):
-                self._bitmap[w, h] = _color
+        for vpos in range(_start, _end, _incr):
+            for hpos in range(_render_offset, _render_offset + self.fill_width()):
+                self._bitmap[hpos, vpos] = _color

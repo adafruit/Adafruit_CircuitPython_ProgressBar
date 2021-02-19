@@ -29,6 +29,10 @@ from adafruit_progressbar.horizontalprogressbar import HorizontalProgressBar
 class ProgressBar(HorizontalProgressBar):
     """A dynamic progress bar widget.
 
+    NOTE: This class is made available for backward compatibility with v1.x of
+    the adafruit_progressbar library. New uses should not use this class, but
+    instead, use its successor, HorizontalProgressBar.
+
     :param x: The x-position of the top left corner.
     :type x: int
     :param y: The y-position of the top left corner.
@@ -75,3 +79,16 @@ class ProgressBar(HorizontalProgressBar):
             border_thickness=stroke,
             show_margin=True,
         )
+
+    # Override the base "progress" property to correctly handle values
+    # in the v1 range of 0.0-1.0
+    @property
+    def progress(self):
+        return self._progress
+
+    @progress.setter
+    def progress(self, value):
+        root_value = value * 100
+        if root_value == self.value:
+            return
+        self.value = root_value

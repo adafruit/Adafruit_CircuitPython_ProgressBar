@@ -210,7 +210,7 @@ class ProgressBarBase(displayio.TileGrid):
         # Convert value to float since we may be dealing with
         # integer types, and we can't work with integer division
         # to get a ratio (position) of "value" within range.
-        self.progress = self.get_value_ratio(value)
+        self._set_progress(self.get_value_ratio(value))
 
     @property
     def progress(self):
@@ -223,16 +223,28 @@ class ProgressBarBase(displayio.TileGrid):
 
     @progress.setter
     def progress(self, value):
-        """The current displayed value of the widget.
+        """Sets the current displayed value of the widget.
 
         :param value: The new value which should be displayed by the progress
                             bar. Must be between 0.0-1.0
         :type value: float
         """
-        # If we're using floats, from 0.0 to 1.0, using 4 decimal places allows us to handle values
-        # as precise as 0.23456, which evaluates to a percentage value of 23.45% (with rounding)
+
+        self._set_progress(value)
+
+    # Bit of a hack to be able to work around the shim "ProgressBar" class
+    # to be able to handle values as it used to.
+    def _set_progress(self, value):
+        """Sets the value for the underlying variable _progress, then
+        calls self.render() with the appropriate values.
+
+        :param value: The value to which self.progress should be set
+        :type value: float
+        :return: None
+        """
+
         self._progress = round(value, 4)
-        self.render(self._old_value, self.value, self.progress)
+        self.render(self._old_value, self._value, value)
 
     @property
     def range(self):
