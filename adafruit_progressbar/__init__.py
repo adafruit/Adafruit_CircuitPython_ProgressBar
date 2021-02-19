@@ -144,6 +144,11 @@ class ProgressBarBase(displayio.TileGrid):
         return self.widget_size[0]
 
     @property
+    def border_thickness(self):
+        """Gets the currently configured thickness of the border (in pixels)"""
+        return self._border_thickness
+
+    @property
     def widget_height(self):
         """The total height of the widget, in pixels. Includes the border and margin."""
         return self.widget_size[1]
@@ -205,19 +210,16 @@ class ProgressBarBase(displayio.TileGrid):
         # Convert value to float since we may be dealing with
         # integer types, and we can't work with integer division
         # to get a ratio (position) of "value" within range.
-        self.progress = (float(value - self._range[0])) / (
-            abs(self._range[0]) + abs(self._range[1])
-        )
+        self.progress = self.get_value_ratio(value)
 
     @property
     def progress(self):
-        """Gets the current displayed value of the widget."""
-        return self._progress
+        """Gets the current displayed value of the widget.
 
-    @property
-    def border_thickness(self):
-        """Gets the currently configured thickness of the border (in pixels)"""
-        return self._border_thickness
+        :return: The current progress ratio
+        :rtype: float
+        """
+        return self._progress
 
     @progress.setter
     def progress(self, value):
@@ -302,6 +304,22 @@ class ProgressBarBase(displayio.TileGrid):
         :return int:
         """
         return 1 if self._margin else 0
+
+    def get_value_ratio(self, value):
+        """Gets the ratio (percentage) of a given value within the
+        range of self.minimum and self.maximum.
+
+        :param value: The value for which the ration should be calculated
+        :type value: int/float
+
+        :return: The ratio of value:range
+        :rtype: float
+        """
+
+        if self.maximum == self.minimum:
+            return 0.0
+
+        return (float(value) - self.minimum) / (self.maximum - self.minimum)
 
     def render(self, _old_value, _new_value, _progress_value) -> None:
         """The method called when the display needs to be updated. This method

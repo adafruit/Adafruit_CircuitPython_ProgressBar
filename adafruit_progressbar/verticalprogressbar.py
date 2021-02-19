@@ -137,7 +137,6 @@ class VerticalProgressBar(ProgressBarBase):
             value_range=(min_value, max_value),
         )
 
-    # pylint: disable=too-many-locals
     def render(self, _old_value, _new_value, _progress_value):
         """
         Does the work of actually creating the graphical representation of
@@ -154,27 +153,20 @@ class VerticalProgressBar(ProgressBarBase):
         :rtype: None
         """
 
-        _toggle = False
+        _prev_ratio = self.get_value_ratio(_old_value)
+        _new_ratio = self.get_value_ratio(_new_value)
 
-        _fill_height = self.fill_height()
-        _fill_width = self.fill_width()
-
-        _prev_ratio = (float(_old_value - self.minimum)) / (self.maximum - self.minimum)
-        _new_ratio = (float(_new_value - self.minimum)) / (self.maximum - self.minimum)
-
-        _prev_value_size = int(_prev_ratio * _fill_height)
-        _new_value_size = int(_new_ratio * _fill_height)
+        _prev_value_size = int(_prev_ratio * self.fill_height())
+        _new_value_size = int(_new_ratio * self.fill_height())
 
         # If we have *ANY* value other than "zero" (minimum), we should
         #   have at least one element showing
-        if _new_value_size == 0 and _new_value > self._min:
-            print("Padding size for non-zero value size")
+        if _new_value_size == 0 and _new_value > self.minimum:
             _new_value_size = 1
 
         # Conversely, if we have *ANY* value other than 100% (maximum),
         #   we should NOT show a full bar.
-        if _new_value_size == self.fill_height() and _new_value < self._max:
-            print("Shortening size for non-max value size")
+        if _new_value_size == self.fill_height() and _new_value < self.maximum:
             _new_value_size -= 1
 
         _render_offset = self.margin_size + self.border_thickness
@@ -191,12 +183,7 @@ class VerticalProgressBar(ProgressBarBase):
             _incr = -1  # Iterate range downward
             _start = max(_prev_value_size + _render_offset, _render_offset)
             _end = max(_new_value_size + _render_offset, _render_offset) - 1
-        elif _prev_value_size == _new_value_size:
-            return  # The pre-defined values above the start
-            # of the if block are already correct.
-        else:
-            pass  # No value change. Return.
 
         for h in range(_start, _end, _incr):
-            for w in range(_render_offset, _render_offset + _fill_width):
+            for w in range(_render_offset, _render_offset + self.fill_width()):
                 self._bitmap[w, h] = _color
