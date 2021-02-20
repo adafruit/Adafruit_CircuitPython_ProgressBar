@@ -37,6 +37,7 @@ progress_bar = ProgressBar(
     outline_color=0xFF0000,
 )
 splash.append(progress_bar)
+
 horizontal_bar = HorizontalProgressBar(
     (10, 80),
     (180, 40),
@@ -46,6 +47,7 @@ horizontal_bar = HorizontalProgressBar(
     direction=HorizontalFillDirection.LEFT_TO_RIGHT,
 )
 splash.append(horizontal_bar)
+
 horizontal_bar1 = HorizontalProgressBar(
     (10, 140),
     (180, 40),
@@ -58,9 +60,14 @@ horizontal_bar1 = HorizontalProgressBar(
     direction=HorizontalFillDirection.RIGHT_TO_LEFT,
 )
 splash.append(horizontal_bar1)
+
 vertical_bar = VerticalProgressBar(
-    (200, 30), (32, 180), direction=VerticalFillDirection.BOTTOM_TO_TOP
+    (200, 30),
+    (32, 180),
+    direction=VerticalFillDirection.BOTTOM_TO_TOP,
 )
+splash.append(vertical_bar)
+
 vertical_bar1 = VerticalProgressBar(
     (260, 30),
     (32, 180),
@@ -68,31 +75,30 @@ vertical_bar1 = VerticalProgressBar(
     max_value=130,
     direction=VerticalFillDirection.TOP_TO_BOTTOM,
 )
-splash.append(vertical_bar)
 splash.append(vertical_bar1)
 
-vals = [99, 100, 99, 1, 0, 1]
-vals2 = [120, 130, 129, -20, -39, -40, -28]
+test_value_range_1 = [99, 100, 99, 1, 0, 1]
+test_value_range_2 = [120, 130, 129, -20, -39, -40, -28]
 delay = 3
-
 _incr = 1
+
 # Must check display.running in the main loop!
 while display.running:
 
     for val in range(0, 100):
-        progress_bar.progress = val * 0.01
+        progress_bar.progress = round(val * 0.01, 2)
         print(f"Value: {progress_bar.progress} ({progress_bar.value})")
         display.refresh()
-        time.sleep(0.05)
+        time.sleep(0.1)
 
-    for val in vals:
+    for val in test_value_range_1:
         print(f"Setting value to {val}")
         vertical_bar.value = val
         horizontal_bar.value = val
         display.refresh()
         time.sleep(delay)
 
-    for val in vals2:
+    for val in test_value_range_2:
         print(f"Setting value to {val}")
         vertical_bar1.value = val
         horizontal_bar1.value = val
