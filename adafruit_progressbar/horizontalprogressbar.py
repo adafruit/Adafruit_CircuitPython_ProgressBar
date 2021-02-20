@@ -55,9 +55,9 @@ class HorizontalProgressBar(ProgressBarBase):
     :type outline_color: int
     :param border_thickness: Used for the outline_color
     :type border_thickness: int
-    :param show_margin: Whether or not to have a margin between the border and
+    :param margin_size: Whether or not to have a margin between the border and
         the fill, or not.
-    :type show_margin: bool
+    :type margin_size: bool
     :param direction: The direction of the fill
     :type direction: FillDirection
 
@@ -75,7 +75,7 @@ class HorizontalProgressBar(ProgressBarBase):
         outline_color=0xFFFFFF,
         fill_color=0x444444,
         border_thickness=1,
-        show_margin=True,
+        margin_size=1,
         direction=FillDirection.DEFAULT,
     ):
 
@@ -87,9 +87,11 @@ class HorizontalProgressBar(ProgressBarBase):
             outline_color,
             fill_color,
             border_thickness,
-            show_margin,
+            margin_size,
             (min_value, max_value),
         )
+
+        self._direction = direction
 
     def render(self, _old_value, _new_value, _progress_value):
         """

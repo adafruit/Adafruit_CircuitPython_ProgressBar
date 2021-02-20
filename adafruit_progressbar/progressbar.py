@@ -77,7 +77,6 @@ class ProgressBar(HorizontalProgressBar):
             outline_color,
             0x000000,
             border_thickness=stroke,
-            show_margin=True,
         )
 
     # Override the base "progress" property to correctly handle values

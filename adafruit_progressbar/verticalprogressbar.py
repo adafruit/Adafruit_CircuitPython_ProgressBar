@@ -60,8 +60,6 @@ class VerticalProgressBar(ProgressBarBase):
     :type anchor_position: Tuple[int, int]
     :param size: The size in (width, height) of the progress bar
     :type size: Tuple[int, int]
-    :param progress: The percentage of the progress bar.
-    :type progress: float
     :param bar_color: The color of the progress bar. Can be a hex
         value for color.
     :param outline_color: The outline of the progress bar. Can be a hex
@@ -69,9 +67,9 @@ class VerticalProgressBar(ProgressBarBase):
     :type outline_color: int
     :param stroke: Used for the outline_color
     :type stroke: int
-    :param margin: Whether or not to have a margin between the border and
+    :param margin_size: Whether or not to have a margin between the border and
         the fill, or not.
-    :type margin: bool
+    :type margin_size: int
     :param direction: The direction of the fill
     :type direction: FillDirection
 
@@ -89,7 +87,7 @@ class VerticalProgressBar(ProgressBarBase):
         outline_color=0xFFFFFF,
         fill_color=0x444444,
         stroke=1,
-        margin=False,
+        margin_size=1,
         direction=FillDirection.DEFAULT,
     ):
         assert (
@@ -105,8 +103,6 @@ class VerticalProgressBar(ProgressBarBase):
 
         self._min = min_value
         self._max = max_value
-
-        self._margin = margin
 
         self._bitmap = displayio.Bitmap(self._width, self._height, 3)
         self._palette = displayio.Palette(3)
@@ -132,7 +128,7 @@ class VerticalProgressBar(ProgressBarBase):
             outline_color,
             fill_color,
             border_thickness=stroke,
-            show_margin=True,
+            margin_size=margin_size,
             value_range=(min_value, max_value),
         )
 
