@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
 
-# SPDX-FileCopyrightText: 2021 ladyada for Adafruit Industries
+# SPDX-FileCopyrightText: 2021 Hugo Dahl for Adafruit Industries
 # SPDX-License-Identifier: MIT
 
 import time
 import displayio
 from blinka_displayio_pygamedisplay import PyGameDisplay
 from adafruit_progressbar.progressbar import ProgressBar
-from adafruit_progressbar.verticalprogressbar import VerticalProgressBar
-from adafruit_progressbar.horizontalprogressbar import HorizontalProgressBar
+from adafruit_progressbar.horizontalprogressbar import (
+    HorizontalProgressBar,
+    HorizontalFillDirection,
+)
+from adafruit_progressbar.verticalprogressbar import (
+    VerticalProgressBar,
+    VerticalFillDirection,
+)
 
 display = PyGameDisplay(width=320, height=240, auto_refresh=False)
 splash = displayio.Group(max_size=10)
@@ -37,6 +43,7 @@ horizontal_bar = HorizontalProgressBar(
     fill_color=0x00FF00,
     outline_color=0x0000FF,
     bar_color=0xFF0000,
+    direction=HorizontalFillDirection.LEFT_TO_RIGHT,
 )
 splash.append(horizontal_bar)
 horizontal_bar1 = HorizontalProgressBar(
@@ -48,10 +55,19 @@ horizontal_bar1 = HorizontalProgressBar(
     fill_color=0x00FF00,
     outline_color=0x0000FF,
     bar_color=0xFF0000,
+    direction=HorizontalFillDirection.RIGHT_TO_LEFT,
 )
 splash.append(horizontal_bar1)
-vertical_bar = VerticalProgressBar((200, 30), (32, 180))
-vertical_bar1 = VerticalProgressBar((260, 30), (32, 180), min_value=-40, max_value=130)
+vertical_bar = VerticalProgressBar(
+    (200, 30), (32, 180), direction=VerticalFillDirection.BOTTOM_TO_TOP
+)
+vertical_bar1 = VerticalProgressBar(
+    (260, 30),
+    (32, 180),
+    min_value=-40,
+    max_value=130,
+    direction=VerticalFillDirection.TOP_TO_BOTTOM,
+)
 splash.append(vertical_bar)
 splash.append(vertical_bar1)
 
@@ -82,18 +98,3 @@ while display.running:
         horizontal_bar1.value = val
         display.refresh()
         time.sleep(delay)
-
-    break
-
-    # pylint: disable=unreachable
-
-    # progress_bar.progress += 0.01
-    vertical_bar.value += _incr
-    if (
-        vertical_bar.value >= vertical_bar.maximum
-        or vertical_bar.value <= vertical_bar.minimum
-    ):
-        _incr *= -1
-    # horizontal_bar.value += 1
-    display.refresh()
-    time.sleep(0.10)

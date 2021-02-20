@@ -83,11 +83,17 @@ class ProgressBar(HorizontalProgressBar):
     # in the v1 range of 0.0-1.0
     @property
     def progress(self):
+        """Gets the progress value displayed"""
         return self._progress
 
     @progress.setter
     def progress(self, value):
+        """Sets the progress value for display"""
         root_value = value * 100
+
+        # Disable pylint since the property "value" is defined in the
+        # base class "ProgressBarBase"
+        # pylint: disable=access-member-before-definition
         if root_value == self.value:
             return
         self.value = root_value

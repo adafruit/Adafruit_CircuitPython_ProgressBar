@@ -9,6 +9,16 @@
 Dynamic progress bar widget for CircuitPython displays
 
 
+* Author(s): Brent Rubell, Hugo Dahl
+
+Implementation Notes
+--------------------
+
+**Software and Dependencies:**
+
+* Adafruit CircuitPython firmware for the supported boards:
+  https://github.com/adafruit/circuitpython/releases
+
 """
 
 from enum import Enum

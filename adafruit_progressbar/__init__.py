@@ -23,8 +23,6 @@ Implementation Notes
 
 # imports
 import displayio
-from horizontalprogressbar import HorizontalProgressBar, HorizontalFillDirection
-from verticalprogressbar import VerticalProgressBar, VerticalFillDirection
 
 
 class ProgressBarBase(displayio.TileGrid):
@@ -141,6 +139,11 @@ class ProgressBarBase(displayio.TileGrid):
     #     # The minimum and maximum values we can represent
     #     _range: (int, int) or (float, float)
 
+    #     Color palette index to property mapping:
+    #       0:  Bar fill color
+    #       1:  Border color
+    #       2:  Background fill color
+
     @property
     def widget_size(self):
         """The size at the outer edge of the control, returned as a tuple (width, height)"""
@@ -203,10 +206,10 @@ class ProgressBarBase(displayio.TileGrid):
         """
         self._fill_color = color
         if color is None:
-            self._palette[2] = 0x00
+            self._palette[0] = 0x00
             self._palette.make_transparent(0)
         else:
-            self._palette[2] = color
+            self._palette[0] = color
             self._palette.make_opaque(0)
 
     @property
@@ -229,10 +232,10 @@ class ProgressBarBase(displayio.TileGrid):
         self._bar_color = color
 
         if color is None:
-            self._palette[0] = 0x00
+            self._palette[2] = 0x00
             self._palette.make_transparent(0)
         else:
-            self._palette[0] = color
+            self._palette[2] = color
             self._palette.make_opaque(0)
 
     @property
