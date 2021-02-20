@@ -68,7 +68,7 @@ class ProgressBarBase(displayio.TileGrid):
         border_color=0xFFFFFF,
         fill_color=0x000000,
         border_thickness=1,
-        margin_size=False,
+        margin_size=1,
         value_range=(0, 100),
     ):
 
@@ -96,6 +96,7 @@ class ProgressBarBase(displayio.TileGrid):
             "less than the height of the widget"
         )
 
+        self._progress = 0.0
         self._widget_size = size
         self._position = position
 
@@ -106,16 +107,17 @@ class ProgressBarBase(displayio.TileGrid):
         self._range = value_range
         self._progress = 0.0
 
+        self._old_value = self.minimum
+        self._value = self.minimum
+
         self.fill = fill_color
-        self.border_color = border_color
         self.bar_color = bar_color
+        self.border_color = border_color
 
         # Setup value and old_value to handle the change to the new
         # initial value later.
         self._value = self.minimum
         self._old_value = self.minimum
-
-        self._margin_size = margin_size
 
         super().__init__(
             self._bitmap,
@@ -125,7 +127,6 @@ class ProgressBarBase(displayio.TileGrid):
         )
 
         self._draw_outline()
-        self.render(self.minimum, self.minimum + 1, 0)
         self.value = value
 
     #     _bitmap: displayio.Bitmap  # The bitmap used for the bar/value
@@ -187,10 +188,10 @@ class ProgressBarBase(displayio.TileGrid):
 
         if color is None:
             self._palette[1] = 0x00
-            self._palette.make_transparent(0)
+            self._palette.make_transparent(1)
         else:
             self._palette[1] = color
-            self._palette.make_opaque(0)
+            self._palette.make_opaque(1)
 
     @property
     def fill(self):
@@ -233,10 +234,10 @@ class ProgressBarBase(displayio.TileGrid):
 
         if color is None:
             self._palette[2] = 0x00
-            self._palette.make_transparent(0)
+            self._palette.make_transparent(2)
         else:
             self._palette[2] = color
-            self._palette.make_opaque(0)
+            self._palette.make_opaque(2)
 
     @property
     def value(self):
