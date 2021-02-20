@@ -23,18 +23,8 @@ Implementation Notes
 
 # imports
 import displayio
-
-
-# pylint: disable=too-few-public-methods
-class FillDirection(enumerate):
-    """Enums to define the direction in which the progressbar
-    should fill"""
-
-    LEFT_TO_RIGHT = 0
-    DEFAULT = LEFT_TO_RIGHT
-    BOTTOM_UP = 1
-    TOP_DOWN = 2
-    RIGHT_TO_LEFT = 3
+from horizontalprogressbar import HorizontalProgressBar, HorizontalFillDirection
+from verticalprogressbar import VerticalProgressBar, VerticalFillDirection
 
 
 class ProgressBarBase(displayio.TileGrid):

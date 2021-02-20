@@ -22,8 +22,17 @@ Implementation Notes
 """
 
 # imports
-import displayio
-from . import ProgressBarBase, FillDirection
+from enum import Enum
+from . import ProgressBarBase
+
+
+class VerticalFillDirection(Enum):
+    """This enum is used to specify the direction in which the progress
+    bar's display bar should fill as the value represented increases."""
+
+    BOTTOM_TO_TOP = 0, "Fills from the bottom up toward the top"
+    DEFAULT = BOTTOM_TO_TOP, "Default fill direction (BOTTOM_TO_TOP)"
+    TOP_TO_BOTTOM = 1, "Fills from the top down toward the bottom"
 
 
 # pylint: disable=too-many-arguments, too-few-public-methods, too-many-instance-attributes
@@ -71,7 +80,7 @@ class VerticalProgressBar(ProgressBarBase):
         the fill, or not.
     :type margin_size: int
     :param direction: The direction of the fill
-    :type direction: FillDirection
+    :type direction: VerticalFillDirection
 
     """
 
@@ -88,37 +97,8 @@ class VerticalProgressBar(ProgressBarBase):
         fill_color=0x444444,
         stroke=1,
         margin_size=1,
-        direction=FillDirection.DEFAULT,
+        direction=VerticalFillDirection.DEFAULT,
     ):
-        assert (
-            min_value < max_value
-        ), "The minimum value must be LESS THAN the maximum value"
-        assert isinstance(
-            anchor_position, tuple
-        ), "The anchor_position must be a tuple/coordinate)"
-        assert isinstance(size, tuple), "The size must be a tuple/coordinate)"
-
-        self._width = size[0]
-        self._height = size[1]
-
-        self._min = min_value
-        self._max = max_value
-
-        self._bitmap = displayio.Bitmap(self._width, self._height, 3)
-        self._palette = displayio.Palette(3)
-        self._palette[0] = 0x0
-        self._palette[1] = outline_color
-        self._palette[2] = bar_color
-
-        # _width and _height are already in use for blinka TileGrid
-        self._bar_width = self._width
-        self._bar_height = self._height
-
-        self._x = anchor_position[0]
-        self._y = anchor_position[1]
-
-        self._stroke = stroke
-        self._direction = direction
 
         super().__init__(
             anchor_position,
@@ -131,6 +111,8 @@ class VerticalProgressBar(ProgressBarBase):
             margin_size=margin_size,
             value_range=(min_value, max_value),
         )
+
+        self._direction = direction
 
     def render(self, _old_value, _new_value, _progress_value):
         """

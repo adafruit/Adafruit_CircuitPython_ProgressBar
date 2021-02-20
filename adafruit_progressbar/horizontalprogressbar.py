@@ -11,8 +11,17 @@ Dynamic progress bar widget for CircuitPython displays
 
 """
 
-# import displayio
-from . import ProgressBarBase, FillDirection
+from enum import Enum
+from . import ProgressBarBase
+
+
+class HorizontalFillDirection(Enum):
+    """This enum is used to specify the direction in which the progress
+    bar's display bar should fill as the value represented increases."""
+
+    LEFT_TO_RIGHT = 0, "Fills from the left-hand side toward the right"
+    DEFAULT = LEFT_TO_RIGHT, "Specifies the default fill direction (LEFT_TO_RIGHT)"
+    RIGHT_TO_LEFT = 1, " Fill from the right-hand side toward the left"
 
 
 class HorizontalProgressBar(ProgressBarBase):
@@ -59,7 +68,7 @@ class HorizontalProgressBar(ProgressBarBase):
         the fill, or not.
     :type margin_size: bool
     :param direction: The direction of the fill
-    :type direction: FillDirection
+    :type direction: HorizontalFillDirection
 
     """
 
@@ -76,7 +85,7 @@ class HorizontalProgressBar(ProgressBarBase):
         fill_color=0x444444,
         border_thickness=1,
         margin_size=1,
-        direction=FillDirection.DEFAULT,
+        direction=HorizontalFillDirection.DEFAULT,
     ):
 
         super().__init__(
