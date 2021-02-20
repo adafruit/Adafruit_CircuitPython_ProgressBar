@@ -88,6 +88,26 @@ class ProgressBarBase(displayio.TileGrid):
             value_range[0] < value_range[1]
         ), "The minimum value must be less than the maximum value"
 
+        assert (
+            size[0] > 0 and size[1] > 0
+        ), "The width and the height must be greater than zero"
+
+        assert (
+            value_range[0] <= value <= value_range[1]
+        ), "The starting value must be within the range of minimum to maximum"
+
+        _edge_size = 2 * margin_size + 2 * border_thickness
+
+        assert _edge_size < size[0], (
+            "The size of the borders and margins combined must be "
+            "less than the width of the widget"
+        )
+
+        assert _edge_size < size[1], (
+            "The size of the borders and margins combined must be "
+            "less than the height of the widget"
+        )
+
         self._widget_size = size
         self._position = position
 
@@ -107,10 +127,7 @@ class ProgressBarBase(displayio.TileGrid):
         self._value = self.minimum
         self._old_value = self.minimum
 
-        self._margin = 0
-
-        if self._margin_size:
-            self._margin = 1
+        self._margin_size = margin_size
 
         super().__init__(
             self._bitmap,
