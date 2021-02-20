@@ -100,8 +100,6 @@ class VerticalProgressBar(ProgressBarBase):
         ), "The anchor_position must be a tuple/coordinate)"
         assert isinstance(size, tuple), "The size must be a tuple/coordinate)"
 
-        print(f"Fill direction: {direction}")
-
         self._width = size[0]
         self._height = size[1]
 
@@ -124,6 +122,7 @@ class VerticalProgressBar(ProgressBarBase):
         self._y = anchor_position[1]
 
         self._stroke = stroke
+        self._direction = direction
 
         super().__init__(
             anchor_position,

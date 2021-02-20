@@ -154,16 +154,6 @@ class ProgressBarBase(displayio.TileGrid):
         return self.widget_size[1]
 
     @property
-    def x(self):
-        """The horizontal (x) position of the top-left corner of the widget."""
-        return self._position[0]
-
-    @property
-    def y(self):
-        """The vertical (y) position of the top-left corner of the widget."""
-        return self._position[1]
-
-    @property
     def outline_color(self):
         """Returns the currently configured value for the color of the
         outline (border) of the widget."""
