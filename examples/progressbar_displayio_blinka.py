@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: MIT
 
 import time
+import sys
 import displayio
 from blinka_displayio_pygamedisplay import PyGameDisplay
 from adafruit_progressbar.progressbar import ProgressBar
@@ -34,21 +35,21 @@ progress_bar = ProgressBar(
     y=20,
     progress=0.0,
     bar_color=0x1100FF,
-    outline_color=0xFF0000,
+    outline_color=0x777777,
 )
 splash.append(progress_bar)
 
 horizontal_bar = HorizontalProgressBar(
     (10, 80),
     (180, 40),
-    fill_color=0x00FF00,
+    fill_color=0x778822,
     outline_color=0x0000FF,
-    bar_color=0xFF0000,
+    bar_color=0x00FF00,
     direction=HorizontalFillDirection.LEFT_TO_RIGHT,
 )
 splash.append(horizontal_bar)
 
-horizontal_bar1 = HorizontalProgressBar(
+horizontal_thermometer = HorizontalProgressBar(
     (10, 140),
     (180, 40),
     value=-10,
@@ -56,10 +57,10 @@ horizontal_bar1 = HorizontalProgressBar(
     max_value=130,
     fill_color=0x00FF00,
     outline_color=0x0000FF,
-    bar_color=0xFF0000,
+    bar_color=0x22BB88,
     direction=HorizontalFillDirection.RIGHT_TO_LEFT,
 )
-splash.append(horizontal_bar1)
+splash.append(horizontal_thermometer)
 
 vertical_bar = VerticalProgressBar(
     (200, 30),
@@ -68,27 +69,27 @@ vertical_bar = VerticalProgressBar(
 )
 splash.append(vertical_bar)
 
-vertical_bar1 = VerticalProgressBar(
+vertical_thermometer = VerticalProgressBar(
     (260, 30),
     (32, 180),
     min_value=-40,
     max_value=130,
     direction=VerticalFillDirection.BOTTOM_TO_TOP,
 )
-splash.append(vertical_bar1)
+splash.append(vertical_thermometer)
 
 test_value_range_1 = [99, 100, 99, 1, 0, 1]
 test_value_range_2 = [120, 130, 129, -20, -39, -40, -28]
-delay = 3
+delay = 2
 _incr = 1
 
 # Must check display.running in the main loop!
 while display.running:
 
-    print("Demonstration of legacy functionality and syntax, increment by 0.01")
+    print("\nDemonstration of legacy functionality and syntax, increment by 0.01")
     for val in range(0, 101):
         if not display.running:
-            exit(0)
+            sys.exit(0)
         _use_value = round((val * 0.01), 2)
         if (val % 10) == 0:
             print(f"Value has reached {_use_value:2}")
@@ -96,22 +97,22 @@ while display.running:
         display.refresh()
         time.sleep(0.05)
 
-    print("Demonstration of values between 0 and 100 - Horizontal and vertical")
+    print("\nDemonstration of values between 0 and 100 - Horizontal and vertical")
     for val in test_value_range_1:
         if not display.running:
-            exit(0)
+            sys.exit(0)
         print(f"Setting value to {val}")
         vertical_bar.value = val
         horizontal_bar.value = val
         display.refresh()
         time.sleep(delay)
 
-    print("Demonstration of values between -40 and 130 - Sample Fahrenheit temp. range")
+    print("\nDemonstration of Fahrenheit range -40 and 130 - Horizontal and vertical")
     for val in test_value_range_2:
         if not display.running:
-            exit(0)
+            sys.exit(0)
         print(f"Setting value to {val}")
-        vertical_bar1.value = val
-        horizontal_bar1.value = val
+        vertical_thermometer.value = val
+        horizontal_thermometer.value = val
         display.refresh()
         time.sleep(delay)

@@ -98,6 +98,8 @@ class HorizontalProgressBar(ProgressBarBase):
         direction=HorizontalFillDirection.DEFAULT,
     ):
 
+        self._direction = direction
+
         super().__init__(
             anchor_position,
             size,
@@ -109,8 +111,6 @@ class HorizontalProgressBar(ProgressBarBase):
             margin_size,
             (min_value, max_value),
         )
-
-        self._direction = direction
 
     def render(self, _old_value, _new_value, _progress_value):
         """
@@ -158,6 +158,13 @@ class HorizontalProgressBar(ProgressBarBase):
             _incr = -1  # Iterate range downward
             _start = max(_prev_value_size + _render_offset, _render_offset)
             _end = max(_new_value_size + _render_offset, _render_offset) - 1
+
+        if self._direction == HorizontalFillDirection.RIGHT_TO_LEFT:
+            _ref_pos = self.widget_width - 1
+            _end = _ref_pos - _end  # Those pesky "off-by-one" issues
+            _start = _ref_pos - _start
+            _incr = -1 if _start > _end else 1
+            _color = 0 if _old_value > _new_value else 2
 
         for hpos in range(_start, _end, _incr):
             for vpos in range(_render_offset, _render_offset + self.fill_height()):

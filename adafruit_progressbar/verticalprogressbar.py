@@ -100,6 +100,8 @@ class VerticalProgressBar(ProgressBarBase):
         direction=VerticalFillDirection.DEFAULT,
     ):
 
+        self._direction = direction
+
         super().__init__(
             anchor_position,
             size,
@@ -111,8 +113,6 @@ class VerticalProgressBar(ProgressBarBase):
             margin_size=margin_size,
             value_range=(min_value, max_value),
         )
-
-        self._direction = direction
 
     def render(self, _old_value, _new_value, _progress_value):
         """
@@ -133,7 +133,7 @@ class VerticalProgressBar(ProgressBarBase):
         _prev_ratio = self.get_value_ratio(_old_value)
         _new_ratio = self.get_value_ratio(_new_value)
 
-        _prev_value_size = int(_prev_ratio * self.fill_height())
+        _old_value_size = int(_prev_ratio * self.fill_height())
         _new_value_size = int(_new_ratio * self.fill_height())
 
         # If we have *ANY* value other than "zero" (minimum), we should
@@ -151,15 +151,22 @@ class VerticalProgressBar(ProgressBarBase):
         # Default values for increasing value
         _color = 2
         _incr = 1
-        _start = max(_prev_value_size + _render_offset, _render_offset)
+        _start = max(_old_value_size + _render_offset, _render_offset)
         _end = max(_new_value_size, 0) + _render_offset
 
-        if _prev_value_size > _new_value_size:
+        if _old_value_size > _new_value_size:
             # Override defaults to be decreasing
             _color = 0  # Clear
             _incr = -1  # Iterate range downward
-            _start = max(_prev_value_size + _render_offset, _render_offset)
+            _start = max(_old_value_size + _render_offset, _render_offset)
             _end = max(_new_value_size + _render_offset, _render_offset) - 1
+
+        if self._direction == VerticalFillDirection.BOTTOM_TO_TOP:
+            _ref_pos = self.widget_height - 1
+            _end = _ref_pos - _end  # Those pesky "off-by-one" issues
+            _start = _ref_pos - _start
+            _incr = -1 if _start > _end else 1
+            _color = 0 if _old_value > _new_value else 2
 
         for vpos in range(_start, _end, _incr):
             for hpos in range(_render_offset, _render_offset + self.fill_width()):
