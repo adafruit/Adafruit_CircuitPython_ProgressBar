@@ -73,7 +73,7 @@ vertical_bar1 = VerticalProgressBar(
     (32, 180),
     min_value=-40,
     max_value=130,
-    direction=VerticalFillDirection.TOP_TO_BOTTOM,
+    direction=VerticalFillDirection.BOTTOM_TO_TOP,
 )
 splash.append(vertical_bar1)
 
@@ -85,20 +85,31 @@ _incr = 1
 # Must check display.running in the main loop!
 while display.running:
 
-    for val in range(0, 100):
-        progress_bar.progress = round(val * 0.01, 2)
-        print(f"Value: {progress_bar.progress} ({progress_bar.value})")
+    print("Demonstration of legacy functionality and syntax, increment by 0.01")
+    for val in range(0, 101):
+        if not display.running:
+            exit(0)
+        _use_value = round((val * 0.01), 2)
+        if (val % 10) == 0:
+            print(f"Value has reached {_use_value:2}")
+        progress_bar.progress = round(_use_value, 2)
         display.refresh()
-        time.sleep(0.1)
+        time.sleep(0.05)
 
+    print("Demonstration of values between 0 and 100 - Horizontal and vertical")
     for val in test_value_range_1:
+        if not display.running:
+            exit(0)
         print(f"Setting value to {val}")
         vertical_bar.value = val
         horizontal_bar.value = val
         display.refresh()
         time.sleep(delay)
 
+    print("Demonstration of values between -40 and 130 - Sample Fahrenheit temp. range")
     for val in test_value_range_2:
+        if not display.running:
+            exit(0)
         print(f"Setting value to {val}")
         vertical_bar1.value = val
         horizontal_bar1.value = val
