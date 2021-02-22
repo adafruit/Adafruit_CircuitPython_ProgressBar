@@ -22,17 +22,17 @@ Implementation Notes
 """
 
 # imports
-from enum import Enum
+from enum import IntEnum
 from . import ProgressBarBase
 
 
-class VerticalFillDirection(Enum):
+class VerticalFillDirection(IntEnum):
     """This enum is used to specify the direction in which the progress
     bar's display bar should fill as the value represented increases."""
 
-    BOTTOM_TO_TOP = 0, "Fills from the bottom up toward the top"
-    DEFAULT = BOTTOM_TO_TOP, "Default fill direction (BOTTOM_TO_TOP)"
-    TOP_TO_BOTTOM = 1, "Fills from the top down toward the bottom"
+    BOTTOM_TO_TOP = 0  # "Fills from the bottom up toward the top"
+    DEFAULT = BOTTOM_TO_TOP  # "Default fill direction (BOTTOM_TO_TOP)"
+    TOP_TO_BOTTOM = 1  # "Fills from the top down toward the bottom"
 
 
 # pylint: disable=too-many-arguments, too-few-public-methods, too-many-instance-attributes
@@ -48,25 +48,21 @@ class VerticalProgressBar(ProgressBarBase):
 
     Using the diagrams below, the bar will fill in the following directions::
 
-                         -----------------------------
-                         | Horizontal   | Vertical   |
-        ----------------------------------------------
-        | Ascending      |  1-3 to 2-4 |  3-4 to 1-2 |
-        ----------------------------------------------
-        | Descending     |  2-4 to 1-3 |  1-2 to 3-4 |
-        ----------------------------------------------
+        --------------------------------
+        | Bottom-to-top  |  3-4 to 1-2 |
+        --------------------------------
+        | Top-to-bottom  |  1-2 to 3-4 |
+        --------------------------------
 
-        Vertical            Horizontal
-
-        1--2                1-----------------------2
-        |  |                |                       |
-        |  |                |                       |
-        |  |                3-----------------------4
+        1--2
+        |  |
+        |  |
+        |  |
         |  |
         3--4
 
-    :param anchor_position: The anchor coordinates of the progress bar.
-    :type anchor_position: Tuple[int, int]
+    :param position: The anchor coordinates of the progress bar.
+    :type position: Tuple[int, int]
     :param size: The size in (width, height) of the progress bar
     :type size: Tuple[int, int]
     :param bar_color: The color of the progress bar. Can be a hex
@@ -87,7 +83,7 @@ class VerticalProgressBar(ProgressBarBase):
     # pylint: disable=invalid-name
     def __init__(
         self,
-        anchor_position,
+        position,
         size,
         min_value=0,
         max_value=100,
@@ -103,7 +99,7 @@ class VerticalProgressBar(ProgressBarBase):
         self._direction = direction
 
         super().__init__(
-            anchor_position,
+            position,
             size,
             value,
             bar_color,
