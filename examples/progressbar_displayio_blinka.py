@@ -3,6 +3,10 @@
 # SPDX-FileCopyrightText: 2021 Hugo Dahl for Adafruit Industries
 # SPDX-License-Identifier: MIT
 
+# Before you can run this example, you will need to install the
+# required libraries identifies in the `requirements.txt` file.
+# You can do so automatically by using the "pip" utility.
+
 import time
 import sys
 import displayio
