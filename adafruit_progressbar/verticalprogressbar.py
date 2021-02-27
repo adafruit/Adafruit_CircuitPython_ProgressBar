@@ -22,11 +22,10 @@ Implementation Notes
 """
 
 # imports
-from enum import IntEnum
 from . import ProgressBarBase
 
 
-class VerticalFillDirection(IntEnum):
+class VerticalFillDirection:
     """This enum is used to specify the direction in which the progress
     bar's display bar should fill as the value represented increases."""
 
@@ -91,7 +90,7 @@ class VerticalProgressBar(ProgressBarBase):
         bar_color=0x00FF00,
         outline_color=0xFFFFFF,
         fill_color=0x444444,
-        stroke=1,
+        border_thickness=1,
         margin_size=1,
         direction=VerticalFillDirection.DEFAULT,
     ):
@@ -105,9 +104,9 @@ class VerticalProgressBar(ProgressBarBase):
             bar_color,
             outline_color,
             fill_color,
-            border_thickness=stroke,
-            margin_size=margin_size,
-            value_range=(min_value, max_value),
+            border_thickness,
+            margin_size,
+            (min_value, max_value),
         )
 
     def render(self, _old_value, _new_value, _progress_value):
@@ -156,6 +155,10 @@ class VerticalProgressBar(ProgressBarBase):
             _incr = -1  # Iterate range downward
             _start = max(_old_value_size + _render_offset, _render_offset)
             _end = max(_new_value_size + _render_offset, _render_offset) - 1
+            # If we're setting to minimum, make sure we're clearing by
+            # starting one "bar" higher
+            if _new_value == self.minimum:
+                _start += 1
 
         if self._direction == VerticalFillDirection.BOTTOM_TO_TOP:
             _ref_pos = self.widget_height - 1

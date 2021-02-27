@@ -21,11 +21,10 @@ Implementation Notes
 
 """
 
-from enum import IntEnum
 from . import ProgressBarBase
 
 
-class HorizontalFillDirection(IntEnum):
+class HorizontalFillDirection:
     """This enum is used to specify the direction in which the progress
     bar's display bar should fill as the value represented increases."""
 
@@ -149,12 +148,16 @@ class HorizontalProgressBar(ProgressBarBase):
         _start = max(_prev_value_size + _render_offset, _render_offset)
         _end = max(_new_value_size, 0) + _render_offset
 
-        if _prev_value_size > _new_value_size:
+        if _prev_value_size >= _new_value_size:
             # Override defaults to be decreasing
             _color = 0  # Clear
             _incr = -1  # Iterate range downward
-            _start = max(_prev_value_size + _render_offset, _render_offset)
+            _start = max(_prev_value_size + _render_offset, _render_offset) - 1
             _end = max(_new_value_size + _render_offset, _render_offset) - 1
+            # If we're setting to minimum, make sure we're clearing by
+            # starting one "bar" higher
+            if _new_value == self.minimum:
+                _start += 1
 
         if self._direction == HorizontalFillDirection.RIGHT_TO_LEFT:
             _ref_pos = self.widget_width - 1

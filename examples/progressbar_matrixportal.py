@@ -16,7 +16,14 @@ import rgbmatrix  # For talking to matrices specifically
 
 # CONTROLS
 
-from adafruit_progressbar.progressbar import ProgressBar
+from adafruit_progressbar.horizontalprogressbar import (
+    HorizontalProgressBar,
+    HorizontalFillDirection,
+)
+from adafruit_progressbar.verticalprogressbar import (
+    VerticalProgressBar,
+    VerticalFillDirection,
+)
 
 # ############## DISPLAY SETUP ###############
 
@@ -57,23 +64,73 @@ print("Adding display group")
 group = displayio.Group(max_size=5)  # Create a group to hold all our labels
 display.show(group)
 
-print("Creating progress bar and adding to group")
-progress_bar = ProgressBar(2, 8, 40, 14, 0.6)
+print("Creating progress bars and adding to group")
 
+# A horizontal percentage progress bar, valued at 60%
+progress_bar = HorizontalProgressBar((2, 8), (40, 8), value=60)
 group.insert(0, progress_bar)
+
+# Another progress bar, with explicit range and fill from the right
+ranged_bar = HorizontalProgressBar(
+    (2, 20), (40, 8), value=40, min_value=0, max_value=100
+)
+group.insert(1, ranged_bar)
+
+# Sample thermometer from -40C to 50C, with a value of +15C
+vertical_bar = VerticalProgressBar(
+    (50, 4),
+    (10, 24),
+    min_value=-40,
+    max_value=50,
+    value=15,
+    bar_color=0x1111FF,
+    fill_color=None,
+    margin_size=0,
+    outline_color=0x2222AA,
+)
+group.insert(2, vertical_bar)
+
+# Countdown to the start of the bars demo
+countdown_bar = HorizontalProgressBar(
+    (2, 2),
+    (20, 5),
+    0,
+    5,
+    value=5,
+    bar_color=0x11FF11,
+    fill_color=0x333333,
+    border_thickness=0,
+    margin_size=0,
+)
+
+countdown_end_color = 0xFF1111
+
+group.insert(3, countdown_bar)
+# group.insert(0, countdown_bar)
+for timer in range(countdown_bar.maximum, countdown_bar.minimum, -1):
+    bar_color_to_set = (0x20 * (6 - timer) + 20, (0x20 * (timer - 1)) + 20, 0x10)
+    countdown_bar.bar_color = bar_color_to_set
+    countdown_bar.value = timer
+    time.sleep(1)
+
+countdown_bar.value = 0
+group.remove(countdown_bar)
 
 progress_bar_value = 0.0
 progress_bar_incr = 3.0
 
+print("Start forever loop")
 while True:
-    if progress_bar_value > 100:
-        progress_bar_value = 100
-        progress_bar_incr *= -1
 
-    if progress_bar_value < 0:
-        progress_bar_value = 0
-        progress_bar_incr *= -1
-
-    progress_bar.progress = progress_bar_value / 100
+    progress_bar.value = progress_bar_value
     progress_bar_value += progress_bar_incr
+
+    if progress_bar_value > progress_bar.maximum:
+        progress_bar_value = progress_bar.maximum
+        progress_bar_incr *= -1
+
+    if progress_bar_value < progress_bar.minimum:
+        progress_bar_value = progress_bar.minimum
+        progress_bar_incr *= -1
+
     time.sleep(0.5)
