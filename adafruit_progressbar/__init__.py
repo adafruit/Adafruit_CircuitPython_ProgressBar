@@ -22,6 +22,7 @@ Implementation Notes
 """
 
 # imports
+from typing import Tuple, Union
 import displayio
 
 
@@ -61,16 +62,16 @@ class ProgressBarBase(displayio.TileGrid):
     # pylint: disable=too-many-arguments, too-many-instance-attributes
     def __init__(
         self,
-        position,
-        size,
-        value=0,
+        position: Tuple[int, int],
+        size: Tuple[int, int],
+        value: Union[int, float] = 0,
         bar_color=0x00FF00,
         border_color=0xFFFFFF,
         fill_color=0x000000,
-        border_thickness=1,
-        margin_size=1,
-        value_range=(0, 100),
-    ):
+        border_thickness: int = 1,
+        margin_size: int = 1,
+        value_range: Union[Tuple[int, int], Tuple[float, float]] = (0, 100),
+    ) -> None:
 
         assert (
             value_range[0] < value_range[1]
@@ -146,38 +147,55 @@ class ProgressBarBase(displayio.TileGrid):
     #       2:  Background fill color
 
     @property
-    def widget_size(self):
-        """The size at the outer edge of the control, returned as a tuple (width, height)"""
+    def widget_size(self) -> int:
+        """The size at the outer edge of the control, returned as a tuple (width, height)
+
+        :rtype: int
+        """
         return self._widget_size
 
     @property
-    def widget_width(self):
-        """The total width of the widget, in pixels. Includes the border and margin."""
+    def widget_width(self) -> Tuple[int, int]:
+        """The total width of the widget, in pixels. Includes the border and margin.
+
+        :rtype: Tuple[int, int]
+        """
         return self.widget_size[0]
 
     @property
-    def border_thickness(self):
-        """Gets the currently configured thickness of the border (in pixels)"""
+    def border_thickness(self) -> int:
+        """Gets the currently configured thickness of the border (in pixels)
+
+        :rtype: int
+        """
         return self._border_thickness
 
     @property
-    def widget_height(self):
-        """The total height of the widget, in pixels. Includes the border and margin."""
+    def widget_height(self) -> int:
+        """The total height of the widget, in pixels. Includes the border and margin.
+
+        :rtype: int
+        """
         return self.widget_size[1]
 
     @property
-    def border_color(self):
+    def border_color(self) -> int:
         """Returns the currently configured value for the color of the
-        outline (border) of the widget."""
+        outline (border) of the widget.
+
+        :rtype: int
+        """
         return self._border_color
 
     @border_color.setter
-    def border_color(self, color):
+    def border_color(self, color: Union[int, Tuple[int, int, int]]) -> None:
         """Sets the color of the border of the widget. Set it to 'None'
         if a border should still be part of the widget but not displayed.
 
         :param color: The color to be used for the border
-        :type int/None:
+        :type int/None/Tuple[int, int, int]:
+
+        :rtype: None
         """
 
         assert (
@@ -194,16 +212,21 @@ class ProgressBarBase(displayio.TileGrid):
             self._palette.make_opaque(1)
 
     @property
-    def fill(self):
+    def fill(self) -> int:
         """The fill of the progress bar. Can be a hex value for a color or ``None`` for
         transparent.
+
+        :rtype: int
         """
         return self._fill_color
 
     @fill.setter
-    def fill(self, color):
+    def fill(self, color: Union[int, Tuple[int, int, int]]) -> None:
         """Sets the fill of the progress bar. Can be a hex value for a color or ``None`` for
         transparent.
+
+        :param color: The color to use for the widget's background
+        :type color: int/None/Tuple[int, int, int]
         """
         self._fill_color = color
         if color is None:
@@ -214,20 +237,22 @@ class ProgressBarBase(displayio.TileGrid):
             self._palette.make_opaque(0)
 
     @property
-    def bar_color(self):
+    def bar_color(self) -> int:
         """The color of the bar's fill
 
-        :returns int/None:
+        :rtype: int/None
         """
 
         return self._bar_color
 
     @bar_color.setter
-    def bar_color(self, color):
+    def bar_color(self, color: Union[int, Tuple[int, int, int]]) -> None:
         """Sets the color of the bar
 
         :param color: The color to use for the bar
-        :type color: int/None
+        :type color: int/None/Tuple[int, int, int]
+
+        :rtype: None
         """
 
         self._bar_color = color
@@ -240,19 +265,21 @@ class ProgressBarBase(displayio.TileGrid):
             self._palette.make_opaque(2)
 
     @property
-    def value(self):
+    def value(self) -> Union[int, float]:
         """
         The current value of the control, used to determine its progress/ratio
-        :return: int/float
+        :rtype: int/float
         """
         return self._value
 
     @value.setter
-    def value(self, value):
+    def value(self, value: Union[int, float]) -> None:
         """Sets the current value of the progress within the min-max range
 
         :param value: The new value for the progress status
         :type value: int/float
+
+        :rtype: None
         """
 
         assert isinstance(
@@ -269,7 +296,7 @@ class ProgressBarBase(displayio.TileGrid):
         self._set_progress(self.get_value_ratio(value))
 
     @property
-    def progress(self):
+    def progress(self) -> float:
         """Gets the current displayed value of the widget.
 
         :return: The current progress ratio
@@ -278,48 +305,60 @@ class ProgressBarBase(displayio.TileGrid):
         return self._progress
 
     @progress.setter
-    def progress(self, value):
+    def progress(self, value: float) -> None:
         """Sets the current displayed value of the widget.
 
         :param value: The new value which should be displayed by the progress
                             bar. Must be between 0.0-1.0
         :type value: float
+
+        :rtype: None
         """
 
         self._set_progress(value)
 
     # Bit of a hack to be able to work around the shim "ProgressBar" class
     # to be able to handle values as it used to.
-    def _set_progress(self, value):
+    def _set_progress(self, value: float) -> None:
         """Sets the value for the underlying variable _progress, then
         calls self.render() with the appropriate values.
 
         :param value: The value to which self.progress should be set
         :type value: float
-        :return: None
+        :rtype: None
         """
 
         self._progress = round(value, 4)
         self.render(self._old_value, self._value, value)
 
     @property
-    def range(self):
-        """The range which can be handled as a Tuple(min,max)"""
+    def range(self) -> Tuple[Union[int, float], Union[int, float]]:
+        """The range which can be handled as a Tuple(min,max)
+
+        :rtype: Tuple(int/float, int/float)
+        """
         return self._range
 
     @property
-    def minimum(self):
-        """The minimum (lowest) value which can be displayed"""
+    def minimum(self) -> Union[int, float]:
+        """The minimum (lowest) value which can be displayed
+
+        :rtype: int/float
+        """
         return self.range[0]
 
     @property
-    def maximum(self):
-        """The maximum (highest) value which can be displayed"""
+    def maximum(self) -> Union[int, float]:
+        """The maximum (highest) value which can be displayed
+
+        :rtype: int/float
+        """
         return self.range[1]
 
-    def _draw_outline(self):
+    def _draw_outline(self) -> None:
         """Draws the outline (border) of the progressbar, with a thickness value
         from self.border_thickness.
+
         :rtype None:
         """
         stroke = self.border_thickness
@@ -334,26 +373,28 @@ class ProgressBarBase(displayio.TileGrid):
                 self._bitmap[line, _h] = 1
                 self._bitmap[self.widget_width - 1 - line, _h] = 1
 
-    def fill_width(self):
+    def fill_width(self) -> int:
         """Returns the amount of horizontal space within the widget
         which can be used for value display. This is typically the
         width of the widget as defined, minus any visually reserved space.
-        :return int:
+
+        :rtype: int
         """
 
         return self.widget_width - self._get_fill_border_size()
 
-    def fill_height(self):
+    def fill_height(self) -> int:
         """Returns the amount of vertical space within the widget
         which can be used for value display. This is typically the
         width of the widget as defined, minus any visually reserved
         space.
-        :return int:
+
+        :rtype: int
         """
 
         return self.widget_height - self._get_fill_border_size()
 
-    def _get_fill_border_size(self):
+    def _get_fill_border_size(self) -> int:
         """Determines any visual space reserved for the widget
         based on the defined border thickness, and whether a margin
         should be placed between the border and the bar.
@@ -361,26 +402,30 @@ class ProgressBarBase(displayio.TileGrid):
         (2 x margin_size). The value for margin_size is either 0 (zero)
         or 1 (one) depending on the value of margin_size when the
         widget was created.
-        :return int:
+
+        :rtype: int
         """
 
         return (2 * self.border_thickness) + (2 * self.margin_size)
 
     @property
-    def margin_size(self):
+    def margin_size(self) -> int:
         """Returns the size of the margin on a single side of the display
+
         :return int:
         """
         return self._margin_size
 
     @margin_size.setter
-    def margin_size(self, value):
+    def margin_size(self, value: int) -> None:
         """Sets the new size of the margin to be used between the border
         (if displayed) and the value bar.
 
         :param value: The new size of the margin between the border
         and value bar on all sides of the widget.
         :type value: int
+
+        :rtype: None
         """
 
         assert isinstance(value, int), "The margin size must be an integer"
@@ -400,7 +445,7 @@ class ProgressBarBase(displayio.TileGrid):
         self._margin_size = value
         self._set_progress(self._progress)  # For a render pass
 
-    def get_value_ratio(self, value):
+    def get_value_ratio(self, value: Union[int, float]) -> float:
         """Gets the ratio (percentage) of a given value within the
         range of self.minimum and self.maximum.
 
@@ -416,16 +461,22 @@ class ProgressBarBase(displayio.TileGrid):
 
         return (float(value) - self.minimum) / (self.maximum - self.minimum)
 
-    def render(self, _old_value, _new_value, _progress_value) -> None:
+    def render(
+        self,
+        _old_value: Union[int, float],
+        _new_value: Union[int, float],
+        _progress_value: float,
+    ) -> None:
         """The method called when the display needs to be updated. This method
         can be overridden in child classes to handle the graphics appropriately.
 
         :param _old_value: The value from which we're updating
-        :type _old_value: float
+        :type _old_value: int/float
         :param _new_value: The value to which we're updating
-        :type _new_value: float
+        :type _new_value: int/float
         :param _progress_value: The value of the progress, or ratio between the new value and the
             maximum value
         :type _progress_value: float
-        :rtype None:
+
+        :rtype: None
         """

@@ -53,15 +53,15 @@ class ProgressBar(HorizontalProgressBar):
     # pylint: disable=invalid-name
     def __init__(
         self,
-        x,
-        y,
-        width,
-        height,
-        progress=0.0,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        progress: float = 0.0,
         bar_color=0x00FF00,
         outline_color=0xFFFFFF,
-        stroke=1,
-    ):
+        stroke: int = 1,
+    ) -> None:
 
         # This needs to remain for backward compatibility, the default ProgressBar class
         # should only be able to handle values of type "float"
@@ -82,7 +82,7 @@ class ProgressBar(HorizontalProgressBar):
     # Override the base "progress" property to correctly handle values
     # in the v1 range of 0.0-1.0
     @property
-    def progress(self):
+    def progress(self) -> float:
         """Gets the progress value displayed
 
         :rtype float:
@@ -90,11 +90,13 @@ class ProgressBar(HorizontalProgressBar):
         return self._progress
 
     @progress.setter
-    def progress(self, value):
+    def progress(self, value: float) -> None:
         """Sets the progress value for display
 
         :param value: The progress value to be set, between 0.0 and 1.0
         :type value: float
+
+        :rtype: None
         """
 
         # Disable pylint since the property "value" is defined in the

@@ -21,6 +21,7 @@ Implementation Notes
 
 """
 
+from typing import Tuple, Union
 from . import ProgressBarBase
 
 
@@ -100,21 +101,21 @@ class HorizontalProgressBar(ProgressBarBase):
 
     """
 
-    # pylint: disable=too-many-arguments, duplicate-code
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
-        position,
-        size,
-        min_value=0,
-        max_value=100,
-        value=0,
-        bar_color=0x00FF00,
-        outline_color=0xFFFFFF,
-        fill_color=0x444444,
-        border_thickness=1,
-        margin_size=1,
-        direction=HorizontalFillDirection.DEFAULT,
-    ):
+        position: Tuple[int, int],
+        size: Tuple[int, int],
+        min_value: Union[int, float] = 0,
+        max_value: Union[int, float] = 100,
+        value: Union[int, float] = 0,
+        bar_color: Union[int, Tuple[int, int, int]] = 0x00FF00,
+        outline_color: Union[int, Tuple[int, int, int]] = 0xFFFFFF,
+        fill_color: Union[int, Tuple[int, int, int]] = 0x444444,
+        border_thickness: int = 1,
+        margin_size: int = 1,
+        direction: HorizontalFillDirection = HorizontalFillDirection.DEFAULT,
+    ) -> None:
 
         self._direction = direction
 
@@ -137,26 +138,30 @@ class HorizontalProgressBar(ProgressBarBase):
     # Perform the rendering/drawing of the progress bar using horizontal bar
     # specific logic for pixel adjustments.
 
-    def render(self, _old_value, _new_value, _progress_value):
+    def render(
+        self,
+        _old_value: Union[int, float],
+        _new_value: Union[int, float],
+        _progress_value: float,
+    ) -> None:
         """
         Does the work of actually creating the graphical representation of
             the value (percentage, aka "progress") to be displayed.
 
         :param _old_value: The previously displayed value
-        :type _old_value: float
+        :type _old_value: int/float
         :param _new_value: The new value to display
-        :type _new_value: float
+        :type _new_value: int/float
         :param _progress_value: The value to display, as a percentage, represented
             by a float from 0.0 to 1.0 (0% to 100%)
         :type _progress_value: float
-        :return: None
         :rtype: None
         """
 
         _prev_ratio = self.get_value_ratio(_old_value)
         _new_ratio = self.get_value_ratio(_new_value)
 
-        _prev_value_size = int(_prev_ratio * self.fill_width())
+        _old_value_size = int(_prev_ratio * self.fill_width())
         _new_value_size = int(_new_ratio * self.fill_width())
 
         # If we have *ANY* value other than "zero" (minimum), we should
@@ -174,14 +179,14 @@ class HorizontalProgressBar(ProgressBarBase):
         # Default values for increasing value
         _color = 2
         _incr = 1
-        _start = max(_prev_value_size + _render_offset, _render_offset)
+        _start = max(_old_value_size + _render_offset, _render_offset)
         _end = max(_new_value_size, 0) + _render_offset
 
-        if _prev_value_size >= _new_value_size:
+        if _old_value_size >= _new_value_size:
             # Override defaults to be decreasing
             _color = 0  # Clear
             _incr = -1  # Iterate range downward
-            _start = max(_prev_value_size + _render_offset, _render_offset) - 1
+            _start = max(_old_value_size + _render_offset, _render_offset) - 1
             _end = max(_new_value_size + _render_offset, _render_offset) - 1
             # If we're setting to minimum, make sure we're clearing by
             # starting one "bar" higher
