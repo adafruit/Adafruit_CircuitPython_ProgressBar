@@ -25,13 +25,20 @@ Implementation Notes
 from . import ProgressBarBase
 
 
+# pylint: disable=too-few-public-methods
 class VerticalFillDirection:
     """This enum is used to specify the direction in which the progress
     bar's display bar should fill as the value represented increases."""
 
-    BOTTOM_TO_TOP = 0  # "Fills from the bottom up toward the top"
-    DEFAULT = BOTTOM_TO_TOP  # "Default fill direction (BOTTOM_TO_TOP)"
-    TOP_TO_BOTTOM = 1  # "Fills from the top down toward the bottom"
+    # pylint: disable=pointless-string-statement
+    """Fills from the bottom up toward the top"""
+    BOTTOM_TO_TOP = 0
+    # pylint: disable=pointless-string-statement
+    """Default fill direction (BOTTOM_TO_TOP)"""
+    DEFAULT = BOTTOM_TO_TOP
+    # pylint: disable=pointless-string-statement
+    """Fills from the top down toward the bottom"""
+    TOP_TO_BOTTOM = 1
 
 
 # pylint: disable=too-many-arguments, too-few-public-methods, too-many-instance-attributes
@@ -60,26 +67,41 @@ class VerticalProgressBar(ProgressBarBase):
         |  |
         3--4
 
-    :param position: The anchor coordinates of the progress bar.
+    :param position: The coordinates of the top-left corner of progress bar.
     :type position: Tuple[int, int]
-    :param size: The size in (width, height) of the progress bar
+    :param size: The size in (width, height) of the progress bar, in pixels
     :type size: Tuple[int, int]
-    :param bar_color: The color of the progress bar. Can be a hex
-        value for color.
-    :param outline_color: The outline of the progress bar. Can be a hex
-        value for color.
-    :type outline_color: int
-    :param stroke: Used for the outline_color
-    :type stroke: int
-    :param margin_size: Whether or not to have a margin between the border and
-        the fill, or not.
+    :param min_value: The lowest value which can be displayed by the progress bar.
+        When the "value" property is set to the same value, no bar is displayed.
+    :type min_value: int, float
+    :param max_value:  This highest value which can be displayed by the progress bar.
+        When the "value" property is set to the same value, the bar shows as full.
+    :type max_value: int, float
+    :param value: The starting value to be displayed. Must be between the values of
+        min_value and max_value, inclusively.
+    :type value: int, float
+    :param bar_color: The color of the value portion of the progress bar.
+        Can be a hex value for color (i.e. 0x225588).
+    :type bar_color: int, Tuple[byte, byte, byte]
+    :param outline_color: The colour for the outline of the progress bar.
+        Can be a hex value for color (i.e. 0x225588).
+    :type outline_color: int, Tuple[byte, byte, byte]
+    :param fill_color: The colour for the background within the progress bar.
+        Can be a hex value for color (i.e. 0x225588).
+    :type fill_color: int, Tuple[byte, byte, byte]
+    :param border_thickness: The thickness of the outer border of the widget. If it is
+        1 or larger, will be displayed with the color of the "outline_color" parameter.
+    :type border_thickness: int
+    :param margin_size: The thickness (in pixels) of the margin between the border and
+        the bar. If it is 1 or larger, will be filled in by the color of the
+        "fill_color" parameter.
     :type margin_size: int
     :param direction: The direction of the fill
     :type direction: VerticalFillDirection
 
     """
 
-    # pylint: disable=invalid-name
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         position,
@@ -95,6 +117,10 @@ class VerticalProgressBar(ProgressBarBase):
         direction=VerticalFillDirection.DEFAULT,
     ):
 
+        # Store the "direction" value locally. While they may appear to
+        # "relate" with the values of the horizontal bar, their handling
+        # is too different to be stored in the same underlying property,
+        # which could lead to confusion
         self._direction = direction
 
         super().__init__(
@@ -108,6 +134,12 @@ class VerticalProgressBar(ProgressBarBase):
             margin_size,
             (min_value, max_value),
         )
+
+    # Perform the rendering/drawing of the progress bar using vertical bar
+    # specific logic for pixel adjustments. The added complexity is that by
+    # default, the bar fills from bottom to top, which is a _descending_ value of
+    # the **Y** axis, versus an ascending value for the default horizontal
+    # progress bar direction.
 
     def render(self, _old_value, _new_value, _progress_value):
         """
