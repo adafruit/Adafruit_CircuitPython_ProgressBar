@@ -22,7 +22,10 @@ Implementation Notes
 """
 
 # imports
-from typing import Tuple, Union
+try:
+    from typing import Tuple, Union
+except ImportError:
+    pass  # No harm if the module isn't located
 import displayio
 
 

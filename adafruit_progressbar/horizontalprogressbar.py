@@ -21,7 +21,10 @@ Implementation Notes
 
 """
 
-from typing import Tuple, Union
+try:
+    from typing import Tuple, Union
+except ImportError:
+    pass  # Not needed for execution
 from . import ProgressBarBase
 
 
