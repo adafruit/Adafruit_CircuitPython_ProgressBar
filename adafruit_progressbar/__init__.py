@@ -289,6 +289,10 @@ class ProgressBarBase(displayio.TileGrid):
             value, (int, float)
         ), "The value to set must be either an integer or a float"
 
+        assert (
+            self.minimum <= value <= self.maximum
+        ), f"The value must be between minimum ({self.minimum}) and maximum ({self.maximum})"
+
         # Save off the previous value, so we can pass it in the
         # call to "Render"
         self._old_value = self._value
@@ -317,6 +321,10 @@ class ProgressBarBase(displayio.TileGrid):
 
         :rtype: None
         """
+
+        assert (isinstance(value, (float, int)), "'progress' must be an int or a float")
+
+        assert 0.0 <= value <= 100.0, "'progress' must be between 0 and 100"
 
         self._set_progress(value)
 
