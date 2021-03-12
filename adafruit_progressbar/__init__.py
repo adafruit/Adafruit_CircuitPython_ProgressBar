@@ -322,7 +322,7 @@ class ProgressBarBase(displayio.TileGrid):
         :rtype: None
         """
 
-        assert (isinstance(value, (float, int)), "'progress' must be an int or a float")
+        assert [isinstance(value, (float, int)), "'progress' must be an int or a float"]
 
         assert 0.0 <= value <= 100.0, "'progress' must be between 0 and 100"
 
@@ -340,7 +340,7 @@ class ProgressBarBase(displayio.TileGrid):
         """
 
         self._progress = round(value, 4)
-        self.render(self._old_value, self._value, value)
+        self._render(self._old_value, self._value, value)
 
     @property
     def range(self) -> Tuple[Union[int, float], Union[int, float]]:
@@ -472,7 +472,7 @@ class ProgressBarBase(displayio.TileGrid):
 
         return (float(value) - self.minimum) / (self.maximum - self.minimum)
 
-    def render(
+    def _render(
         self,
         _old_value: Union[int, float],
         _new_value: Union[int, float],

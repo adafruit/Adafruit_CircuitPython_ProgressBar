@@ -144,7 +144,7 @@ class VerticalProgressBar(ProgressBarBase):
     # the **Y** axis, versus an ascending value for the default horizontal
     # progress bar direction.
 
-    def render(
+    def _render(
         self,
         _old_value: Union[int, float],
         _new_value: Union[int, float],

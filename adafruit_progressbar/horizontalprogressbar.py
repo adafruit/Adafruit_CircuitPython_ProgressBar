@@ -141,7 +141,7 @@ class HorizontalProgressBar(ProgressBarBase):
     # Perform the rendering/drawing of the progress bar using horizontal bar
     # specific logic for pixel adjustments.
 
-    def render(
+    def _render(
         self,
         _old_value: Union[int, float],
         _new_value: Union[int, float],
