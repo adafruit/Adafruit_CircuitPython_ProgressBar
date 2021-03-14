@@ -138,74 +138,23 @@ class VerticalProgressBar(ProgressBarBase):
             (min_value, max_value),
         )
 
-    # Perform the rendering/drawing of the progress bar using vertical bar
-    # specific logic for pixel adjustments. The added complexity is that by
-    # default, the bar fills from bottom to top, which is a _descending_ value of
-    # the **Y** axis, versus an ascending value for the default horizontal
-    # progress bar direction.
+    def _get_sizes_min_max(self) -> Tuple[int, int]:
+        return 0, self.fill_height()
 
-    def _render(
-        self,
-        _old_value: Union[int, float],
-        _new_value: Union[int, float],
-        _progress_value: float,
-    ) -> None:
-        """
-        Does the work of actually creating the graphical representation of
-            the value (percentage, aka "progress") to be displayed.
+    def _get_value_sizes(self, _old_ratio: float, _new_ratio: float) -> Tuple[int, int]:
+        return int(_old_ratio * self.fill_height()), int(
+            _new_ratio * self.fill_height()
+        )
 
-        :param _old_value: The previously displayed value
-        :type _old_value: int/float
-        :param _new_value: The new value to display
-        :type _new_value: int/float
-        :param _progress_value: The value to display, as a percentage, represented
-            by a float from 0.0 to 1.0 (0% to 100%)
-        :type _progress_value: float
-        :rtype: None
-        """
+    def _get_horizontal_fill(
+        self, _start: int, _end: int, _incr: int
+    ) -> Tuple[int, int, int]:
+        return 0, self.fill_width(), 1
 
-        _prev_ratio = self.get_value_ratio(_old_value)
-        _new_ratio = self.get_value_ratio(_new_value)
+    def _get_vertical_fill(
+        self, _start: int, _end: int, _incr: int
+    ) -> Tuple[int, int, int]:
+        return _start, _end, _incr
 
-        _old_value_size = int(_prev_ratio * self.fill_height())
-        _new_value_size = int(_new_ratio * self.fill_height())
-
-        # If we have *ANY* value other than "zero" (minimum), we should
-        #   have at least one element showing
-        if _new_value_size == 0 and _new_value > self.minimum:
-            _new_value_size = 1
-
-        # Conversely, if we have *ANY* value other than 100% (maximum),
-        #   we should NOT show a full bar.
-        if _new_value_size == self.fill_height() and _new_value < self.maximum:
-            _new_value_size -= 1
-
-        _render_offset = self.margin_size + self.border_thickness
-
-        # Default values for increasing value
-        _color = 2
-        _incr = 1
-        _start = max(_old_value_size + _render_offset, _render_offset)
-        _end = max(_new_value_size, 0) + _render_offset
-
-        if _old_value_size >= _new_value_size:
-            # Override defaults to be decreasing
-            _color = 0  # Clear
-            _incr = -1  # Iterate range downward
-            _start = max(_old_value_size + _render_offset, _render_offset)
-            _end = max(_new_value_size + _render_offset, _render_offset) - 1
-            # If we're setting to minimum, make sure we're clearing by
-            # starting one "bar" higher
-            if _new_value == self.minimum:
-                _start += 1
-
-        if self._direction == VerticalFillDirection.BOTTOM_TO_TOP:
-            _ref_pos = self.widget_height - 1
-            _end = _ref_pos - _end  # Those pesky "off-by-one" issues
-            _start = _ref_pos - _start
-            _incr = -1 if _start > _end else 1
-            _color = 0 if _old_value > _new_value else 2
-
-        for vpos in range(_start, _end, _incr):
-            for hpos in range(_render_offset, _render_offset + self.fill_width()):
-                self._bitmap[hpos, vpos] = _color
+    def _invert_fill_direction(self) -> bool:
+        return self._direction == VerticalFillDirection.BOTTOM_TO_TOP

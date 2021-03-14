@@ -472,22 +472,109 @@ class ProgressBarBase(displayio.TileGrid):
 
         return (float(value) - self.minimum) / (self.maximum - self.minimum)
 
+    @classmethod
+    def _get_value_sizes(cls, _old_ratio: float, _new_ratio: float) -> Tuple[int, int]:
+        return 0, 0
+
+    def _get_ratios(
+        self, _old_value: Union[int, float], _new_value: Union[int, float]
+    ) -> Tuple[float, float]:
+        return self.get_value_ratio(_old_value), self.get_value_ratio(_new_value)
+
+    def _adjust_size_for_range_limits(
+        self, _new_value_size: int, _new_value: Union[int, float]
+    ) -> int:
+        # If we have *ANY* value other than "zero" (minimum), we should
+        #   have at least one element showing
+        if _new_value_size == 0 and _new_value > self.minimum:
+            _new_value_size = 1
+
+        # Conversely, if we have *ANY* value other than 100% (maximum),
+        #   we should NOT show a full bar.
+        if _new_value_size == self.fill_height() and _new_value < self.maximum:
+            _new_value_size -= 1
+
+        return _new_value_size
+
+    def _get_sizes_min_max(self) -> Tuple[int, int]:
+        return 0, min(self.fill_width(), self.fill_height())
+
+    @classmethod
+    def _invert_fill_direction(cls) -> bool:
+        return False
+
+    def _get_horizontal_fill(
+        self, _start: int, _end: int, _incr: int
+    ) -> Tuple[int, int, int]:
+        return 0, self.fill_width(), 1  # Subclass must return values
+
+    def _get_vertical_fill(
+        self, _start: int, _end: int, _incr: int
+    ) -> Tuple[int, int, int]:
+        return 0, self.fill_height(), 1  # Subclass must return values
+
+    # pylint: disable=too-many-locals
     def _render(
         self,
         _old_value: Union[int, float],
         _new_value: Union[int, float],
         _progress_value: float,
     ) -> None:
-        """The method called when the display needs to be updated. This method
-        can be overridden in child classes to handle the graphics appropriately.
+        """
+        Does the work of actually creating the graphical representation of
+            the value (percentage, aka "progress") to be displayed.
 
-        :param _old_value: The value from which we're updating
+        :param _old_value: The previously displayed value
         :type _old_value: int/float
-        :param _new_value: The value to which we're updating
+        :param _new_value: The new value to display
         :type _new_value: int/float
-        :param _progress_value: The value of the progress, or ratio between the new value and the
-            maximum value
+        :param _progress_value: The value to display, as a percentage, represented
+            by a float from 0.0 to 1.0 (0% to 100%)
         :type _progress_value: float
-
         :rtype: None
         """
+
+        _prev_ratio, _new_ratio = self._get_ratios(_old_value, _new_value)
+        _old_value_size, _new_value_size = self._get_value_sizes(
+            _prev_ratio, _new_ratio
+        )
+
+        # Adjusts for edge cases, such as 0-width non-zero value, or 100% width
+        # non-maximum values
+        _new_value_size = self._adjust_size_for_range_limits(
+            _new_value_size, _new_value
+        )
+        _render_offset = self.margin_size + self.border_thickness
+
+        # Default values for increasing value
+        _color = 2
+        _incr = 1
+        _start = max(_old_value_size + _render_offset, _render_offset)
+        _end = max(_new_value_size, 0) + _render_offset
+
+        if _old_value_size >= _new_value_size:
+            # Override defaults to be decreasing
+            _color = 0  # Clear
+            _incr = -1  # Iterate range downward
+            _start = max(_old_value_size + _render_offset, _render_offset)
+            _end = max(_new_value_size + _render_offset, _render_offset) - 1
+            # If we're setting to minimum, make sure we're clearing by
+            # starting one "bar" higher
+            if _new_value == self.minimum:
+                _start += 1
+
+        if self._invert_fill_direction():
+            _ref_pos = self.widget_height - 1
+            _end = _ref_pos - _end  # Those pesky "off-by-one" issues
+            _start = _ref_pos - _start
+            _incr = -1 if _start > _end else 1
+            _color = 0 if _old_value > _new_value else 2
+
+        vert_start, vert_end, vert_incr = self._get_vertical_fill(_start, _end, _incr)
+        horiz_start, horiz_end, horiz_incr = self._get_horizontal_fill(
+            _start, _end, _incr
+        )
+
+        for vertical_position in range(vert_start, vert_end, vert_incr):
+            for horizontal_position in range(horiz_start, horiz_end, horiz_incr):
+                self._bitmap[horizontal_position, vertical_position] = _color
