@@ -146,11 +146,6 @@ class VerticalProgressBar(ProgressBarBase):
             _new_ratio * self.fill_height()
         )
 
-    def _get_horizontal_fill(
-        self, _start: int, _end: int, _incr: int
-    ) -> Tuple[int, int, int]:
-        return 0, self.fill_width(), 1
-
     def _get_vertical_fill(
         self, _start: int, _end: int, _incr: int
     ) -> Tuple[int, int, int]:

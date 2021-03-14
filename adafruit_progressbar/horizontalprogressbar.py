@@ -149,10 +149,5 @@ class HorizontalProgressBar(ProgressBarBase):
     ) -> Tuple[int, int, int]:
         return _start, _end, _incr
 
-    def _get_vertical_fill(
-        self, _start: int, _end: int, _incr: int
-    ) -> Tuple[int, int, int]:
-        return 0, self.fill_height(), 1
-
     def _invert_fill_direction(self) -> bool:
         return self._direction == HorizontalFillDirection.RIGHT_TO_LEFT
