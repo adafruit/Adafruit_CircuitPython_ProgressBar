@@ -151,3 +151,6 @@ class HorizontalProgressBar(ProgressBarBase):
 
     def _invert_fill_direction(self) -> bool:
         return self._direction == HorizontalFillDirection.RIGHT_TO_LEFT
+
+    def _get_max_fill_size(self):
+        return self.fill_width()

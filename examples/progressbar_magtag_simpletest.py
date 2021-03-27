@@ -9,7 +9,7 @@ import time
 import board
 import displayio
 import digitalio
-from adafruit_progressbar.progressbar import ProgressBar
+from adafruit_progressbar.progressbar import HorizontalProgressBar
 
 # use built in display (PyPortal, PyGamer, PyBadge, CLUE, etc.)
 # see guide for setting up external displays (TFT / OLED breakouts, RGB matrices, etc.)
@@ -34,7 +34,7 @@ x = display.width // 2 - BAR_WIDTH // 2
 y = display.height // 3
 
 # Create a new progress_bar object at (x, y)
-progress_bar = ProgressBar(
+progress_bar = HorizontalProgressBar(
     x, y, BAR_WIDTH, BAR_HEIGHT, 1.0, bar_color=0x666666, outline_color=0xFFFFFF
 )
 

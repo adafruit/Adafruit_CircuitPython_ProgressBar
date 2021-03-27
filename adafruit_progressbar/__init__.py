@@ -23,7 +23,7 @@ Implementation Notes
 
 # imports
 try:
-    from typing import Tuple, Union
+    from typing import Tuple, Union, List
 except ImportError:
     pass  # No harm if the module isn't located
 import displayio
@@ -476,6 +476,10 @@ class ProgressBarBase(displayio.TileGrid):
     def _get_value_sizes(cls, _old_ratio: float, _new_ratio: float) -> Tuple[int, int]:
         return 0, 0
 
+    @classmethod
+    def _get_max_fill_size(cls) -> int:
+        return 0
+
     def _get_ratios(
         self, _old_value: Union[int, float], _new_value: Union[int, float]
     ) -> Tuple[float, float]:
@@ -487,11 +491,13 @@ class ProgressBarBase(displayio.TileGrid):
         # If we have *ANY* value other than "zero" (minimum), we should
         #   have at least one element showing
         if _new_value_size == 0 and _new_value > self.minimum:
+            print(f"Adjust 1 up for {_new_value}")
             _new_value_size = 1
 
         # Conversely, if we have *ANY* value other than 100% (maximum),
         #   we should NOT show a full bar.
-        if _new_value_size == self.fill_height() and _new_value < self.maximum:
+        if _new_value_size == self._get_max_fill_size() and _new_value < self.maximum:
+            print(f"Adjust 1 down for {_new_value}")
             _new_value_size -= 1
 
         return _new_value_size
@@ -549,31 +555,37 @@ class ProgressBarBase(displayio.TileGrid):
         # Default values for increasing value
         _color = 2
         _incr = 1
-        _start = max(_old_value_size + _render_offset, _render_offset)
-        _end = max(_new_value_size, 0) + _render_offset
+        _start = max(_old_value_size, 0)
+        _end = max(_new_value_size, 0)
 
         if _old_value_size >= _new_value_size:
             # Override defaults to be decreasing
             _color = 0  # Clear
             _incr = -1  # Iterate range downward
-            _start = max(_old_value_size + _render_offset, _render_offset)
-            _end = max(_new_value_size + _render_offset, _render_offset) - 1
+            _start = max(_old_value_size, 0) - 1
+            _end = max(_new_value_size, 0) - 1
             # If we're setting to minimum, make sure we're clearing by
-            # starting one "bar" higher
+            #  starting one "bar" further
             if _new_value == self.minimum:
                 _start += 1
 
-        if self._invert_fill_direction():
-            _ref_pos = self.widget_height - 1
-            _end = _ref_pos - _end  # Those pesky "off-by-one" issues
-            _start = _ref_pos - _start
-            _incr = -1 if _start > _end else 1
-            _color = 0 if _old_value > _new_value else 2
+        #         if self._invert_fill_direction():
+        #             _ref_pos = self.widget_height - _render_offset
+        #             self._debug("Ref pos: ", _ref_pos)
+        #             _end = _ref_pos - _end  # Those pesky "off-by-one" issues
+        #             _start = _ref_pos - _start
+        #             _incr = -1 if _start > _end else 1
+        #             _color = 0 if _old_value > _new_value else 2
 
         vert_start, vert_end, vert_incr = self._get_vertical_fill(_start, _end, _incr)
         horiz_start, horiz_end, horiz_incr = self._get_horizontal_fill(
             _start, _end, _incr
         )
+
+        vert_start += _render_offset
+        vert_end += _render_offset
+        horiz_start += _render_offset
+        horiz_end += _render_offset
 
         for vertical_position in range(vert_start, vert_end, vert_incr):
             for horizontal_position in range(horiz_start, horiz_end, horiz_incr):

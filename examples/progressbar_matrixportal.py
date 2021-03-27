@@ -16,6 +16,8 @@ import rgbmatrix  # For talking to matrices specifically
 
 # CONTROLS
 
+import digitalio
+
 from adafruit_progressbar.horizontalprogressbar import (
     HorizontalProgressBar,
     HorizontalFillDirection,
@@ -72,7 +74,12 @@ group.insert(0, progress_bar)
 
 # Another progress bar, with explicit range and fill from the right
 ranged_bar = HorizontalProgressBar(
-    (2, 20), (40, 8), value=40, min_value=0, max_value=100
+    (2, 20),
+    (40, 8),
+    value=40,
+    min_value=0,
+    max_value=100,
+    direction=HorizontalFillDirection.RIGHT_TO_LEFT,
 )
 group.insert(1, ranged_bar)
 
@@ -107,11 +114,18 @@ countdown_end_color = 0xFF1111
 
 group.insert(3, countdown_bar)
 # group.insert(0, countdown_bar)
+
+print("Progress bars added. Starting demo...")
+
+print("Using countdown bar")
+
 for timer in range(countdown_bar.maximum, countdown_bar.minimum, -1):
     bar_color_to_set = (0x20 * (6 - timer) + 20, (0x20 * (timer - 1)) + 20, 0x10)
     countdown_bar.bar_color = bar_color_to_set
     countdown_bar.value = timer
     time.sleep(1)
+
+print("Removing countdown bar")
 
 countdown_bar.value = 0
 group.remove(countdown_bar)
@@ -119,10 +133,19 @@ group.remove(countdown_bar)
 progress_bar_value = 0.0
 progress_bar_incr = 3.0
 
+button1 = digitalio.DigitalInOut(board.BUTTON_UP)
+button1.switch_to_input(digitalio.Pull.UP)
+button2 = digitalio.DigitalInOut(board.BUTTON_DOWN)
+button2.switch_to_input(digitalio.Pull.UP)
+
+
 print("Start forever loop")
 while True:
 
+    print("Setting progress bar value to", progress_bar_value)
+
     progress_bar.value = progress_bar_value
+    ranged_bar.value = progress_bar_value
     progress_bar_value += progress_bar_incr
 
     if progress_bar_value > progress_bar.maximum:
@@ -133,4 +156,11 @@ while True:
         progress_bar_value = progress_bar.minimum
         progress_bar_incr *= -1
 
+    #     button_pressed = False
+    #     while False == button_pressed:
+    #         button_pressed = button_pressed or not (button1.value and button2.value)
+    #         time.sleep(0.1)
+
+    #     print("Step")
+    button_pressed = False
     time.sleep(0.5)
