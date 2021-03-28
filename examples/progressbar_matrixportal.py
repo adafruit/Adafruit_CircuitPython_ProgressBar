@@ -85,8 +85,8 @@ group.insert(1, ranged_bar)
 
 # Sample thermometer from -40C to 50C, with a value of +15C
 vertical_bar = VerticalProgressBar(
-    (50, 4),
-    (10, 24),
+    (44, 4),
+    (8, 24),
     min_value=-40,
     max_value=50,
     value=15,
@@ -96,6 +96,20 @@ vertical_bar = VerticalProgressBar(
     outline_color=0x2222AA,
 )
 group.insert(2, vertical_bar)
+
+vertical_bar2 = VerticalProgressBar(
+    (54, 4),
+    (8, 24),
+    min_value=-40,
+    max_value=50,
+    value=15,
+    bar_color=0x1111FF,
+    fill_color=None,
+    margin_size=0,
+    outline_color=0x2222AA,
+    direction=VerticalFillDirection.TOP_TO_BOTTOM,
+)
+group.insert(3, vertical_bar2)
 
 # Countdown to the start of the bars demo
 countdown_bar = HorizontalProgressBar(
@@ -112,7 +126,7 @@ countdown_bar = HorizontalProgressBar(
 
 countdown_end_color = 0xFF1111
 
-group.insert(3, countdown_bar)
+group.insert(4, countdown_bar)
 # group.insert(0, countdown_bar)
 
 print("Progress bars added. Starting demo...")
@@ -148,6 +162,18 @@ while True:
     ranged_bar.value = progress_bar_value
     progress_bar_value += progress_bar_incr
 
+    if not (button1.value and button2.value):
+
+        if not button1.value:  # "UP" button pushed
+            print("UP button pressed. Increasing vertical bars by 3")
+            vertical_bar.value = min(vertical_bar.maximum, vertical_bar.value + 3)
+            vertical_bar2.value = min(vertical_bar2.maximum, vertical_bar2.value + 3)
+
+        if not button2.value:  # "DOWN" button pushed
+            print("DOWN button pressed. Decreasing vertical bars by 3")
+            vertical_bar.value = max(vertical_bar.minimum, vertical_bar.value - 3)
+            vertical_bar2.value = max(vertical_bar2.minimum, vertical_bar2.value - 3)
+
     if progress_bar_value > progress_bar.maximum:
         progress_bar_value = progress_bar.maximum
         progress_bar_incr *= -1
@@ -156,11 +182,4 @@ while True:
         progress_bar_value = progress_bar.minimum
         progress_bar_incr *= -1
 
-    #     button_pressed = False
-    #     while False == button_pressed:
-    #         button_pressed = button_pressed or not (button1.value and button2.value)
-    #         time.sleep(0.1)
-
-    #     print("Step")
-    button_pressed = False
     time.sleep(0.5)
