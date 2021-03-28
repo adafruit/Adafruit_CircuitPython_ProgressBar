@@ -69,7 +69,7 @@ splash.append(horizontal_thermometer)
 vertical_bar = VerticalProgressBar(
     (200, 30),
     (32, 180),
-    direction=VerticalFillDirection.BOTTOM_TO_TOP,
+    direction=VerticalFillDirection.TOP_TO_BOTTOM,
 )
 splash.append(vertical_bar)
 

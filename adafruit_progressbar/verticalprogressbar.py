@@ -22,10 +22,11 @@ Implementation Notes
 """
 
 try:
-    from typing import Tuple, Union
+    from typing import Tuple
 except ImportError:
     pass  # Not needed for execution
 from . import ProgressBarBase
+from .horizontalprogressbar import HorizontalProgressBar
 
 
 # pylint: disable=too-few-public-methods
@@ -45,7 +46,7 @@ class VerticalFillDirection:
 
 
 # pylint: disable=too-many-arguments, too-few-public-methods, too-many-instance-attributes
-class VerticalProgressBar(ProgressBarBase):
+class VerticalProgressBar(HorizontalProgressBar):
     """A dynamic progress bar widget.
 
     The anchor position is the position where the control would start if it
@@ -104,40 +105,6 @@ class VerticalProgressBar(ProgressBarBase):
 
     """
 
-    # pylint: disable=too-many-arguments
-    def __init__(
-        self,
-        position: Tuple[int, int],
-        size: Tuple[int, int],
-        min_value: Union[int, float] = 0,
-        max_value: Union[int, float] = 100,
-        value: Union[int, float] = 0,
-        bar_color: Union[int, Tuple[int, int, int]] = 0x00FF00,
-        outline_color: Union[int, Tuple[int, int, int]] = 0xFFFFFF,
-        fill_color: Union[int, Tuple[int, int, int]] = 0x444444,
-        border_thickness: int = 1,
-        margin_size: int = 1,
-        direction: VerticalFillDirection = VerticalFillDirection.DEFAULT,
-    ) -> None:
-
-        # Store the "direction" value locally. While they may appear to
-        # "relate" with the values of the horizontal bar, their handling
-        # is too different to be stored in the same underlying property,
-        # which could lead to confusion
-        self._direction = direction
-
-        super().__init__(
-            position,
-            size,
-            value,
-            bar_color,
-            outline_color,
-            fill_color,
-            border_thickness,
-            margin_size,
-            (min_value, max_value),
-        )
-
     def _get_sizes_min_max(self) -> Tuple[int, int]:
         return 0, self.fill_height()
 
@@ -145,6 +112,14 @@ class VerticalProgressBar(ProgressBarBase):
         return int(_old_ratio * self.fill_height()), int(
             _new_ratio * self.fill_height()
         )
+
+    # pylint: disable=protected-access
+    def _get_horizontal_fill(
+        self, _start: int, _end: int, _incr: int
+    ) -> Tuple[int, int, int]:
+        return ProgressBarBase._get_horizontal_fill(self, _start, _end, _incr)
+
+    # pylint: enable=protected-access
 
     def _get_vertical_fill(
         self, _start: int, _end: int, _incr: int

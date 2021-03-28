@@ -154,6 +154,14 @@ class HorizontalProgressBar(ProgressBarBase):
 
         return base_offset - _start, base_offset - _end, _incr * -1
 
+    # pylint: disable=protected-access
+    def _get_vertical_fill(
+        self, _start: int, _end: int, _incr: int
+    ) -> Tuple[int, int, int]:
+        return ProgressBarBase._get_vertical_fill(self, _start, _end, _incr)
+
+    # pylint: enable=protected-access
+
     def _invert_fill_direction(self) -> bool:
         return self._direction == HorizontalFillDirection.RIGHT_TO_LEFT
 
