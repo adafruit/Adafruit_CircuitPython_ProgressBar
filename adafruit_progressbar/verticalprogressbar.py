@@ -149,7 +149,12 @@ class VerticalProgressBar(ProgressBarBase):
     def _get_vertical_fill(
         self, _start: int, _end: int, _incr: int
     ) -> Tuple[int, int, int]:
-        return _start, _end, _incr
+        if not self._invert_fill_direction():
+            return _start, _end, _incr
+
+        base_offset = self.fill_height() - 1
+
+        return base_offset - _start, base_offset - _end, _incr * -1
 
     def _invert_fill_direction(self) -> bool:
         return self._direction == VerticalFillDirection.BOTTOM_TO_TOP

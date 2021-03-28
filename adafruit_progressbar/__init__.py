@@ -491,13 +491,11 @@ class ProgressBarBase(displayio.TileGrid):
         # If we have *ANY* value other than "zero" (minimum), we should
         #   have at least one element showing
         if _new_value_size == 0 and _new_value > self.minimum:
-            print(f"Adjust 1 up for {_new_value}")
             _new_value_size = 1
 
         # Conversely, if we have *ANY* value other than 100% (maximum),
         #   we should NOT show a full bar.
         if _new_value_size == self._get_max_fill_size() and _new_value < self.maximum:
-            print(f"Adjust 1 down for {_new_value}")
             _new_value_size -= 1
 
         return _new_value_size
@@ -550,7 +548,6 @@ class ProgressBarBase(displayio.TileGrid):
         _new_value_size = self._adjust_size_for_range_limits(
             _new_value_size, _new_value
         )
-        _render_offset = self.margin_size + self.border_thickness
 
         # Default values for increasing value
         _color = 2
@@ -569,13 +566,7 @@ class ProgressBarBase(displayio.TileGrid):
             if _new_value == self.minimum:
                 _start += 1
 
-        #         if self._invert_fill_direction():
-        #             _ref_pos = self.widget_height - _render_offset
-        #             self._debug("Ref pos: ", _ref_pos)
-        #             _end = _ref_pos - _end  # Those pesky "off-by-one" issues
-        #             _start = _ref_pos - _start
-        #             _incr = -1 if _start > _end else 1
-        #             _color = 0 if _old_value > _new_value else 2
+        _render_offset = self.margin_size + self.border_thickness
 
         vert_start, vert_end, vert_incr = self._get_vertical_fill(_start, _end, _incr)
         horiz_start, horiz_end, horiz_incr = self._get_horizontal_fill(
