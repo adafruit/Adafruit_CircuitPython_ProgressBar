@@ -17,10 +17,15 @@ from adafruit_progressbar.progressbar import HorizontalProgressBar
 display = board.DISPLAY
 time.sleep(display.time_to_refresh)
 
-# a button will be used to advance the progress
-a_btn = digitalio.DigitalInOut(board.BUTTON_A)
-a_btn.direction = digitalio.Direction.INPUT
-a_btn.pull = digitalio.Pull.UP
+# B/up button will be used to increase the progress
+up_btn = digitalio.DigitalInOut(board.BUTTON_B)
+up_btn.direction = digitalio.Direction.INPUT
+up_btn.pull = digitalio.Pull.UP
+
+# C/down button will be used to increase the progress
+down_btn = digitalio.DigitalInOut(board.BUTTON_C)
+down_btn.direction = digitalio.Direction.INPUT
+down_btn.pull = digitalio.Pull.UP
 
 # Make the display context
 splash = displayio.Group(max_size=10)
@@ -35,32 +40,56 @@ y = display.height // 3
 
 # Create a new progress_bar object at (x, y)
 progress_bar = HorizontalProgressBar(
-    x, y, BAR_WIDTH, BAR_HEIGHT, 1.0, bar_color=0x666666, outline_color=0xFFFFFF
+    (x, y),
+    (BAR_WIDTH, BAR_HEIGHT),
+    bar_color=0xFFFFFF,
+    outline_color=0xAAAAAA,
+    fill_color=0x777777,
 )
 
 # Append progress_bar to the splash group
 splash.append(progress_bar)
 
-current_progress = (time.monotonic() % 101) / 100.0
+# Get a random starting value within our min/max range
+current_progress = time.monotonic() % 101
 print(current_progress)
-progress_bar.progress = current_progress
+progress_bar.value = current_progress
 
 # refresh the display
 display.refresh()
 
-prev_a = a_btn.value
+value_incrementor = 3
+
+prev_up = up_btn.value
+prev_down = down_btn.value
 while True:
-    cur_a = a_btn.value
-    # if a_btn was just pressed down
-    if not cur_a and prev_a:
-        current_progress += 0.20
-        if current_progress > 1.0:
-            current_progress = 0.0
+    cur_up = up_btn.value
+    cur_down = down_btn.value
+    do_refresh = False
+    # if up_btn was just pressed down
+    if not cur_up and prev_up:
+        current_progress += value_incrementor
+        # Wrap if we get over the maximum value
+        if current_progress > progress_bar.maximum:
+            current_progress = progress_bar.minimum
+
+        do_refresh = True
+
+    if not cur_down and prev_down:
+        current_progress -= value_incrementor
+        # Wrap if we get below the minimum value
+        if current_progress < progress_bar.minimum:
+            current_progress = progress_bar.maximum
+
+        do_refresh = True
+
+    if do_refresh:
         print(current_progress)
-        progress_bar.progress = current_progress
+        progress_bar.value = current_progress
 
         time.sleep(display.time_to_refresh)
         display.refresh()
         time.sleep(display.time_to_refresh)
 
-    prev_a = cur_a
+    prev_up = cur_up
+    prev_down = cur_down

@@ -313,10 +313,20 @@ class ProgressBarBase(displayio.TileGrid):
 
     @progress.setter
     def progress(self, value: float) -> None:
-        """Sets the current displayed value of the widget.
+        """Sets the current displayed value of the widget. This will update the
+        `value` property to an approximation based on the allowed range. The calculation
+        used to determine the approximate value is
+        `((self.minimum + (self.maximum - self.minimum)) * progress)`.
+        For the most accurate representation of a given value, it is recommended to set the
+        property "value" to the desired value.
+
+        Example: If the range for the widget is 0-10, setting a progress value of "35"
+        will result in `value` being "3.5", since 3.5 is the 35% value of the range between
+        0 and 10. The value determined from this method makes no assumptions or checks based on
+        the type of the "value" field.
 
         :param value: The new value which should be displayed by the progress
-                            bar. Must be between 0.0-1.0
+                            bar. Must be between 0.0-100.0
         :type value: float
 
         :rtype: None
@@ -326,7 +336,7 @@ class ProgressBarBase(displayio.TileGrid):
 
         assert 0.0 <= value <= 100.0, "'progress' must be between 0 and 100"
 
-        self._set_progress(value)
+        self.value = (self.minimum + (self.maximum - self.minimum)) * (value * 0.01)
 
     # Bit of a hack to be able to work around the shim "ProgressBar" class
     # to be able to handle values as it used to.
