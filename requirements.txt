@@ -3,3 +3,8 @@
 # SPDX-License-Identifier: Unlicense
 
 Adafruit-Blinka
+adafruit-blinka-displayio
+
+# This library is only needed for use with Blinka. Should not
+# be retrieved or used for boards through Circup
+# blinka-displayio-pygamedisplay
