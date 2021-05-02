@@ -57,7 +57,7 @@ class HorizontalProgressBar(ProgressBarBase):
     Using the diagrams below, the bar will fill in the following directions::
 
         --------------------------------
-        | Left-to-right   |  1-3 to 2-4 |
+        | Left-to-right  |  1-3 to 2-4 |
         --------------------------------
         | Right-to-left  |  2-4 to 1-3 |
         --------------------------------

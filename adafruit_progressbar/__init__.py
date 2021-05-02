@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-`progressbar_base`
+`adafruit_progressbar`
 ================================================================================
 
 Dynamic progress bar widget for CircuitPython displays
