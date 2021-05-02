@@ -9,4 +9,4 @@
 Adafruit-Blinka
 adafruit-blinka-displayio
 blinka-displayio-pygamedisplay
-adafruit-fancyled
+adafruit-circuitpython-fancyled
