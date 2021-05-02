@@ -76,29 +76,28 @@ class ProgressBarBase(displayio.TileGrid):
         value_range: Union[Tuple[int, int], Tuple[float, float]] = (0, 100),
     ) -> None:
 
-        assert (
-            value_range[0] < value_range[1]
-        ), "The minimum value must be less than the maximum value"
+        if not (value_range[0] < value_range[1]):
+            raise ValueError("The minimum value must be less than the maximum value")
 
-        assert (
-            size[0] > 0 and size[1] > 0
-        ), "The width and the height must be greater than zero"
+        if not (size[0] > 0 and size[1] > 0):
+            raise ValueError("The width and the height must be greater than zero")
 
-        assert (
-            value_range[0] <= value <= value_range[1]
-        ), "The starting value must be within the range of minimum to maximum"
+        if not (value_range[0] <= value <= value_range[1]):
+            raise ValueError("The starting value must be within the range of minimum to maximum")
 
         _edge_size = 2 * margin_size + 2 * border_thickness
 
-        assert _edge_size < size[0], (
-            "The size of the borders and margins combined must be "
-            "less than the width of the widget"
-        )
+        if not (_edge_size < size[0]):
+            raise ValueError(
+                "The size of the borders and margins combined must be "
+                "less than the width of the widget"
+            )
 
-        assert _edge_size < size[1], (
-            "The size of the borders and margins combined must be "
-            "less than the height of the widget"
-        )
+        if not (_edge_size < size[1]):
+            raise ValueError(
+                "The size of the borders and margins combined must be "
+                "less than the height of the widget"
+            )
 
         self._progress = 0.0
         self._widget_size = size
@@ -201,9 +200,8 @@ class ProgressBarBase(displayio.TileGrid):
         :rtype: None
         """
 
-        assert (
-            isinstance(color, int) or color is None
-        ), "A color must be represented by a integer value"
+        if not (isinstance(color, int) or color is None):
+            raise TypeError("A color must be represented by a integer value")
 
         self._border_color = color
 
@@ -285,13 +283,11 @@ class ProgressBarBase(displayio.TileGrid):
         :rtype: None
         """
 
-        assert isinstance(
-            value, (int, float)
-        ), "The value to set must be either an integer or a float"
+        if not (isinstance(value, (int, float))):
+            raise TypeError("The value to set must be either an integer or a float")
 
-        assert (
-            self.minimum <= value <= self.maximum
-        ), f"The value must be between minimum ({self.minimum}) and maximum ({self.maximum})"
+        if not (self.minimum <= value <= self.maximum):
+            raise ValueError(f"The value must be between minimum ({self.minimum}) and maximum ({self.maximum})")
 
         # Save off the previous value, so we can pass it in the
         # call to "Render"
@@ -332,9 +328,11 @@ class ProgressBarBase(displayio.TileGrid):
         :rtype: None
         """
 
-        assert [isinstance(value, (float, int)), "'progress' must be an int or a float"]
+        if not (isinstance(value, (float, int))):
+            raise TypeError("'progress' must be an int or a float")
 
-        assert 0.0 <= value <= 100.0, "'progress' must be between 0 and 100"
+        if not (0.0 <= value <= 100.0):
+            raise ValueError("'progress' must be between 0 and 100")
 
         self.value = (self.minimum + (self.maximum - self.minimum)) * (value * 0.01)
 
@@ -449,19 +447,22 @@ class ProgressBarBase(displayio.TileGrid):
         :rtype: None
         """
 
-        assert isinstance(value, int), "The margin size must be an integer"
+        if not (isinstance(value, int)):
+            raise TypeError("The margin size must be an integer")
 
         margin_spacing = (2 * value) + (2 * self._border_thickness)
 
-        assert margin_spacing < self.widget_width, (
-            "The size of the borders and margins combined can total the same or more"
-            "than the widget's width."
-        )
+        if not (margin_spacing < self.widget_width):
+            raise ValueError(
+                "The size of the borders and margins combined can total the same or more"
+                "than the widget's width."
+            )
 
-        assert margin_spacing < self.widget_height, (
-            "The size of the borders and margins combined can total the same or more"
-            "than the widget's height."
-        )
+        if not (margin_spacing < self.widget_height):
+            raise ValueError(
+                "The size of the borders and margins combined can total the same or more"
+                "than the widget's height."
+            )
 
         self._margin_size = value
         self._set_progress(self._progress)  # For a render pass

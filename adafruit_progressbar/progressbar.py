@@ -65,7 +65,8 @@ class ProgressBar(HorizontalProgressBar):
 
         # This needs to remain for backward compatibility, the default ProgressBar class
         # should only be able to handle values of type "float"
-        assert isinstance(progress, float), "Progress must be a floating point value."
+        if not (isinstance(progress, float)):
+            raise TypeError("Progress must be a floating point value.")
 
         super().__init__(
             (x, y),
