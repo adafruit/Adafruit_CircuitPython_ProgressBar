@@ -76,24 +76,24 @@ class ProgressBarBase(displayio.TileGrid):
         value_range: Union[Tuple[int, int], Tuple[float, float]] = (0, 100),
     ) -> None:
 
-        if not (value_range[0] < value_range[1]):
+        if value_range[0] >= value_range[1]:
             raise ValueError("The minimum value must be less than the maximum value")
 
-        if not (size[0] > 0 and size[1] > 0):
+        if size[0] <= 0 or size[1] <= 0:
             raise ValueError("The width and the height must be greater than zero")
 
-        if not (value_range[0] <= value <= value_range[1]):
+        if not value_range[0] <= value <= value_range[1]:
             raise ValueError("The starting value must be within the range of minimum to maximum")
 
         _edge_size = 2 * margin_size + 2 * border_thickness
 
-        if not (_edge_size < size[0]):
+        if _edge_size >= size[0]:
             raise ValueError(
                 "The size of the borders and margins combined must be "
                 "less than the width of the widget"
             )
 
-        if not (_edge_size < size[1]):
+        if _edge_size >= size[1]:
             raise ValueError(
                 "The size of the borders and margins combined must be "
                 "less than the height of the widget"
@@ -283,10 +283,10 @@ class ProgressBarBase(displayio.TileGrid):
         :rtype: None
         """
 
-        if not (isinstance(value, (int, float))):
+        if not isinstance(value, (int, float)):
             raise TypeError("The value to set must be either an integer or a float")
 
-        if not (self.minimum <= value <= self.maximum):
+        if not self.minimum <= value <= self.maximum:
             raise ValueError(f"The value must be between minimum ({self.minimum}) and maximum ({self.maximum})")
 
         # Save off the previous value, so we can pass it in the
@@ -328,10 +328,10 @@ class ProgressBarBase(displayio.TileGrid):
         :rtype: None
         """
 
-        if not (isinstance(value, (float, int))):
+        if not isinstance(value, (float, int)):
             raise TypeError("'progress' must be an int or a float")
 
-        if not (0.0 <= value <= 100.0):
+        if not 0.0 <= value <= 100.0:
             raise ValueError("'progress' must be between 0 and 100")
 
         self.value = (self.minimum + (self.maximum - self.minimum)) * (value * 0.01)
@@ -447,18 +447,18 @@ class ProgressBarBase(displayio.TileGrid):
         :rtype: None
         """
 
-        if not (isinstance(value, int)):
+        if not isinstance(value, int):
             raise TypeError("The margin size must be an integer")
 
         margin_spacing = (2 * value) + (2 * self._border_thickness)
 
-        if not (margin_spacing < self.widget_width):
+        if margin_spacing >= self.widget_width:
             raise ValueError(
                 "The size of the borders and margins combined can total the same or more"
                 "than the widget's width."
             )
 
-        if not (margin_spacing < self.widget_height):
+        if margin_spacing >= self.widget_height:
             raise ValueError(
                 "The size of the borders and margins combined can total the same or more"
                 "than the widget's height."
