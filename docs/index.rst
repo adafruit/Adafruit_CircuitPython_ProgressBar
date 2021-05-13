@@ -23,6 +23,10 @@ Table of Contents
 .. toctree::
     :caption: Tutorials
 
+    ProgressBar Basics <https://learn.adafruit.com/magtag-progress-displays/progressbar-basics>
+
+    Adafruit MagTag COVID Vaccination Percent Tracker  <https://learn.adafruit.com/adafruit-magtag-covid-vaccination-percent-tracker>
+
 
 .. toctree::
     :caption: Related Products
