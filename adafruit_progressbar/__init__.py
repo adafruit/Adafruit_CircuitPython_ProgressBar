@@ -83,7 +83,9 @@ class ProgressBarBase(displayio.TileGrid):
             raise ValueError("The width and the height must be greater than zero")
 
         if not value_range[0] <= value <= value_range[1]:
-            raise ValueError("The starting value must be within the range of minimum to maximum")
+            raise ValueError(
+                "The starting value must be within the range of minimum to maximum"
+            )
 
         _edge_size = 2 * margin_size + 2 * border_thickness
 
@@ -287,7 +289,9 @@ class ProgressBarBase(displayio.TileGrid):
             raise TypeError("The value to set must be either an integer or a float")
 
         if not self.minimum <= value <= self.maximum:
-            raise ValueError(f"The value must be between minimum ({self.minimum}) and maximum ({self.maximum})")
+            raise ValueError(
+                f"The value must be between minimum ({self.minimum}) and maximum ({self.maximum})"
+            )
 
         # Save off the previous value, so we can pass it in the
         # call to "Render"
