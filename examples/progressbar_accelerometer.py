@@ -148,7 +148,7 @@ background = displayio.TileGrid(color_bitmap, pixel_shader=color_palette, x=0, y
 main_group.append(background)
 
 # Accelerometer Properties. Normally accelerometer well calibrated
-# Will give a maxium output of 10 mts / s**2
+# Will give a maximum output of 10 mts / s**2
 VALUES_X = (-10, 10)
 VALUES_Y = (-10, 10)
 
@@ -207,25 +207,19 @@ delay = 0.5
 
 while True:
     for val in fake__accel_data:
-        if val[0] > 0:
+        if val[0] >= 0:
             left_horizontal_bar.value = 0
             right_horizontal_bar.value = val[0]
         if val[0] < 0:
             left_horizontal_bar.value = -val[0]
             right_horizontal_bar.value = 0
-        if val[0] == 0:
-            right_horizontal_bar.value = 0
-            left_horizontal_bar.value = 0
 
-        if val[1] > 0:
+        if val[1] >= 0:
             top_vertical_bar.value = val[1]
             bottom_vertical_bar.value = 0
         if val[1] < 0:
             bottom_vertical_bar.value = -val[1]
             top_vertical_bar.value = 0
-        if val[1] == 0:
-            top_vertical_bar.value = 0
-            bottom_vertical_bar.value = 0
 
         display.refresh()
         time.sleep(delay)
