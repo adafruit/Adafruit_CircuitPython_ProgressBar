@@ -22,7 +22,7 @@ from adafruit_progressbar.verticalprogressbar import (
 )
 
 display = PyGameDisplay(width=320, height=240, auto_refresh=False)
-splash = displayio.Group(max_size=10)
+splash = displayio.Group()
 display.show(splash)
 
 color_bitmap = displayio.Bitmap(display.width, display.height, 1)

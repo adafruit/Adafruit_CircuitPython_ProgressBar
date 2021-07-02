@@ -23,7 +23,7 @@ from adafruit_progressbar.horizontalprogressbar import (
 )
 
 display = PyGameDisplay(width=320, height=240, auto_refresh=False)
-splash = displayio.Group(max_size=10)
+splash = displayio.Group()
 display.show(splash)
 
 # Setting up the grayscale values, You could use a different scale, and add more entries
@@ -70,7 +70,7 @@ horizontal_bar = HorizontalProgressBar(
 splash.append(horizontal_bar)
 
 # List of step values for the progress bar
-test_value_range_1 = [i for i in range(99)]
+test_value_range_1 = list(range(99))
 
 # Must check display.running in the main loop!
 while display.running:
