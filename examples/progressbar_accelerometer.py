@@ -137,7 +137,7 @@ fake__accel_data = [
     (3.476150, -4.812025, 7.421532),
 ]
 display = board.DISPLAY
-main_group = displayio.Group(max_size=10)
+main_group = displayio.Group()
 display.show(main_group)
 
 color_bitmap = displayio.Bitmap(display.width, display.height, 1)

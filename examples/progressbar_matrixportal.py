@@ -63,7 +63,7 @@ matrix = rgbmatrix.RGBMatrix(
 display = framebufferio.FramebufferDisplay(matrix)
 
 print("Adding display group")
-group = displayio.Group(max_size=5)  # Create a group to hold all our labels
+group = displayio.Group()  # Create a group to hold all our labels
 display.show(group)
 
 print("Creating progress bars and adding to group")
