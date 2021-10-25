@@ -55,6 +55,11 @@ Usage Example
 
 An for this library is within the examples directory.
 
+Documentation
+=============
+
+API documentation for this library can be found on `Read the Docs <https://circuitpython.readthedocs.io/projects/progressbar/en/latest/>`_.
+
 Contributing
 ============
 
