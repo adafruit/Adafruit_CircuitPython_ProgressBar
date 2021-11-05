@@ -42,7 +42,7 @@ grad = [
 # Creating the grayscale Palette using the FancyLed Library
 palette = fancy.expand_gradient(grad, 50)
 
-colors = list()
+colors = []
 
 # We create an equal space palette. This is done for convenience and clarity as we use
 # a value from 0 to 100 in our ProgressBar
