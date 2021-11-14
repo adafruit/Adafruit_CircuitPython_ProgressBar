@@ -28,6 +28,9 @@ except ImportError:
     pass  # No harm if the module isn't located
 import displayio
 
+__version__ = "0.0.0-auto.0"
+__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_ProgressBar.git"
+
 
 class ProgressBarBase(displayio.TileGrid):
     """The base class for dynamic progress bar widgets.
