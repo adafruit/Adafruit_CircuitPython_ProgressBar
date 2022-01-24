@@ -2,7 +2,7 @@ Introduction
 ============
 
 .. image:: https://readthedocs.org/projects/adafruit-circuitpython-progressbar/badge/?version=latest
-    :target: https://circuitpython.readthedocs.io/projects/progressbar/en/latest/
+    :target: https://docs.circuitpython.org/projects/progressbar/en/latest/
     :alt: Documentation Status
 
 .. image:: https://img.shields.io/discord/327254708534116352.svg
@@ -58,7 +58,7 @@ An for this library is within the examples directory.
 Documentation
 =============
 
-API documentation for this library can be found on `Read the Docs <https://circuitpython.readthedocs.io/projects/progressbar/en/latest/>`_.
+API documentation for this library can be found on `Read the Docs <https://docs.circuitpython.org/projects/progressbar/en/latest/>`_.
 
 Contributing
 ============
