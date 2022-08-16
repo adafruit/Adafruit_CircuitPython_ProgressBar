@@ -24,7 +24,7 @@ Implementation Notes
 # imports
 from adafruit_progressbar.horizontalprogressbar import HorizontalProgressBar
 
-__version__ = "0.0.0-auto.0"
+__version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_ProgressBar.git"
 
 # pylint: disable=too-many-arguments, too-few-public-methods
