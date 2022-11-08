@@ -490,12 +490,12 @@ class ProgressBarBase(displayio.TileGrid):
 
         return (float(value) - self.minimum) / (self.maximum - self.minimum)
 
-    @classmethod
-    def _get_value_sizes(cls, _old_ratio: float, _new_ratio: float) -> Tuple[int, int]:
+    # pylint: disable=no-self-use
+    def _get_value_sizes(self, _old_ratio: float, _new_ratio: float) -> Tuple[int, int]:
         return 0, 0
 
-    @classmethod
-    def _get_max_fill_size(cls) -> int:
+    # pylint: disable=no-self-use
+    def _get_max_fill_size(self) -> int:
         return 0
 
     def _get_ratios(
@@ -521,8 +521,8 @@ class ProgressBarBase(displayio.TileGrid):
     def _get_sizes_min_max(self) -> Tuple[int, int]:
         return 0, min(self.fill_width(), self.fill_height())
 
-    @classmethod
-    def _invert_fill_direction(cls) -> bool:
+    # pylint: disable=no-self-use
+    def _invert_fill_direction(self) -> bool:
         return False
 
     def _get_horizontal_fill(
