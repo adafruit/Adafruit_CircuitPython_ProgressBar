@@ -155,7 +155,6 @@ button2.switch_to_input(digitalio.Pull.UP)
 
 print("Start forever loop")
 while True:
-
     print("Setting progress bar value to", progress_bar_value)
 
     progress_bar.value = progress_bar_value
@@ -163,7 +162,6 @@ while True:
     progress_bar_value += progress_bar_incr
 
     if not (button1.value and button2.value):
-
         if not button1.value:  # "UP" button pushed
             print("UP button pressed. Increasing vertical bars by 3")
             vertical_bar.value = min(vertical_bar.maximum, vertical_bar.value + 3)

@@ -27,6 +27,7 @@ from adafruit_progressbar.horizontalprogressbar import HorizontalProgressBar
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_ProgressBar.git"
 
+
 # pylint: disable=too-many-arguments, too-few-public-methods
 class ProgressBar(HorizontalProgressBar):
     """A dynamic progress bar widget.
@@ -64,7 +65,6 @@ class ProgressBar(HorizontalProgressBar):
         outline_color=0xFFFFFF,
         stroke: int = 1,
     ) -> None:
-
         # This needs to remain for backward compatibility, the default ProgressBar class
         # should only be able to handle values of type "float"
         if not isinstance(progress, float):

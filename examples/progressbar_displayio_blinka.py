@@ -89,7 +89,6 @@ _incr = 1
 
 # Must check display.running in the main loop!
 while display.running:
-
     print("\nDemonstration of legacy functionality and syntax, increment by 0.01")
     for val in range(0, 101):
         if not display.running:

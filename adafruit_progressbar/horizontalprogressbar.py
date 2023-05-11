@@ -122,7 +122,6 @@ class HorizontalProgressBar(ProgressBarBase):
         margin_size: int = 1,
         direction: HorizontalFillDirection = HorizontalFillDirection.DEFAULT,
     ) -> None:
-
         # Store the "direction" value locally. While they may appear to
         # "relate" with the values of the vertical bar, their handling
         # is too different to be stored in the same underlying property,

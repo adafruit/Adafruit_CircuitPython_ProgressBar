@@ -78,7 +78,6 @@ class ProgressBarBase(displayio.TileGrid):
         margin_size: int = 1,
         value_range: Union[Tuple[int, int], Tuple[float, float]] = (0, 100),
     ) -> None:
-
         if value_range[0] >= value_range[1]:
             raise ValueError("The minimum value must be less than the maximum value")
 
