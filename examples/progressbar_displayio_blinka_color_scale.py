@@ -24,7 +24,7 @@ from adafruit_progressbar.horizontalprogressbar import (
 
 display = PyGameDisplay(width=320, height=240, auto_refresh=False)
 splash = displayio.Group()
-display.show(splash)
+display.root_group = splash
 
 # Setting up the grayscale values, You could use a different scale, and add more entries
 # to have detailed transitions

@@ -11,7 +11,7 @@ from adafruit_progressbar.verticalprogressbar import (
 
 # Make the display context
 splash = displayio.Group()
-board.DISPLAY.show(splash)
+board.DISPLAY.root_group = splash
 
 # set progress bar width and height relative to board's display
 width = 10

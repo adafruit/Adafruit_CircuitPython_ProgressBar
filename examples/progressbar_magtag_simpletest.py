@@ -29,7 +29,7 @@ down_btn.pull = digitalio.Pull.UP
 
 # Make the display context
 splash = displayio.Group()
-display.show(splash)
+display.root_group = splash
 
 # set progress bar width and height relative to board's display
 BAR_WIDTH = display.width - 40

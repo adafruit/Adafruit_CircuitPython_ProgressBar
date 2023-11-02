@@ -64,7 +64,7 @@ display = framebufferio.FramebufferDisplay(matrix)
 
 print("Adding display group")
 group = displayio.Group()  # Create a group to hold all our labels
-display.show(group)
+display.root_group = group
 
 print("Creating progress bars and adding to group")
 
