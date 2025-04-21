@@ -54,10 +54,10 @@ class ProgressBarBase(displayio.TileGrid):
                             be a hexadecimal value for color (0xEE7755).
                             Default: 0x000000 (Black)
     :type fill_color: int
-    :param margin_size: Specify whether a margin between the border of the widget and the bar
-                              representing the value should be visible or not.
-                              Default: True
-    :type margin_size: bool
+    :param margin_size: The thickness (in pixels) of the margin between the border and
+        the bar. If it is 1 or larger, will be filled in by the color of the
+        "fill_color" parameter.
+    :type margin_size: int
     :param value_range: Specify the range of allowed values for which the progress
                         should be displayed. When setting the "value" property,
                         this range is the one against which its progression will be determined.
