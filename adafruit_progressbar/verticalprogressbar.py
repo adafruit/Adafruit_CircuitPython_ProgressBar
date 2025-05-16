@@ -32,23 +32,18 @@ __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_ProgressBar.git"
 
 
-# pylint: disable=too-few-public-methods
 class VerticalFillDirection:
     """This enum is used to specify the direction in which the progress
     bar's display bar should fill as the value represented increases."""
 
-    # pylint: disable=pointless-string-statement
     """Fills from the bottom up toward the top"""
     BOTTOM_TO_TOP = 0
-    # pylint: disable=pointless-string-statement
     """Default fill direction (BOTTOM_TO_TOP)"""
     DEFAULT = BOTTOM_TO_TOP
-    # pylint: disable=pointless-string-statement
     """Fills from the top down toward the bottom"""
     TOP_TO_BOTTOM = 1
 
 
-# pylint: disable=too-many-arguments, too-few-public-methods, too-many-instance-attributes
 class VerticalProgressBar(HorizontalProgressBar):
     """A dynamic progress bar widget.
 
@@ -112,21 +107,12 @@ class VerticalProgressBar(HorizontalProgressBar):
         return 0, self.fill_height()
 
     def _get_value_sizes(self, _old_ratio: float, _new_ratio: float) -> Tuple[int, int]:
-        return int(_old_ratio * self.fill_height()), int(
-            _new_ratio * self.fill_height()
-        )
+        return int(_old_ratio * self.fill_height()), int(_new_ratio * self.fill_height())
 
-    # pylint: disable=protected-access
-    def _get_horizontal_fill(
-        self, _start: int, _end: int, _incr: int
-    ) -> Tuple[int, int, int]:
+    def _get_horizontal_fill(self, _start: int, _end: int, _incr: int) -> Tuple[int, int, int]:
         return ProgressBarBase._get_horizontal_fill(self, _start, _end, _incr)
 
-    # pylint: enable=protected-access
-
-    def _get_vertical_fill(
-        self, _start: int, _end: int, _incr: int
-    ) -> Tuple[int, int, int]:
+    def _get_vertical_fill(self, _start: int, _end: int, _incr: int) -> Tuple[int, int, int]:
         if not self._invert_fill_direction():
             return _start, _end, _incr
 

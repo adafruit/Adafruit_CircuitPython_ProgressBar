@@ -2,11 +2,13 @@
 # SPDX-License-Identifier: MIT
 
 import time
+
 import board
 import displayio
+
 from adafruit_progressbar.horizontalprogressbar import (
-    HorizontalProgressBar,
     HorizontalFillDirection,
+    HorizontalProgressBar,
 )
 
 # Make the display context
@@ -32,7 +34,7 @@ current_value = progress_bar.minimum
 while True:
     # range end is exclusive so we need to use 1 bigger than max number that we want
     for current_value in range(progress_bar.minimum, progress_bar.maximum + 1, 1):
-        print("Progress: {}%".format(current_value))
+        print(f"Progress: {current_value}%")
         progress_bar.value = current_value
         time.sleep(0.01)
     time.sleep(0.3)

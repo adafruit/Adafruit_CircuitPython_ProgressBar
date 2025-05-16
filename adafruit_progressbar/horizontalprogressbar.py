@@ -31,18 +31,14 @@ __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_ProgressBar.git"
 
 
-# pylint: disable=too-few-public-methods
 class HorizontalFillDirection:
     """This enum is used to specify the direction in which the progress
     bar's display bar should fill as the value represented increases."""
 
-    # pylint: disable=pointless-string-statement
     """Fills from the left-hand side toward the right"""
     LEFT_TO_RIGHT = 0
-    # pylint: disable=pointless-string-statement
     """Specifies the default fill direction (LEFT_TO_RIGHT)"""
     DEFAULT = LEFT_TO_RIGHT
-    # pylint: disable=pointless-string-statement
     """Fill from the right-hand side toward the left"""
     RIGHT_TO_LEFT = 1
 
@@ -107,7 +103,6 @@ class HorizontalProgressBar(ProgressBarBase):
 
     """
 
-    # pylint: disable=too-many-arguments
     def __init__(
         self,
         position: Tuple[int, int],
@@ -146,9 +141,7 @@ class HorizontalProgressBar(ProgressBarBase):
     def _get_value_sizes(self, _old_ratio: float, _new_ratio: float) -> Tuple[int, int]:
         return int(_old_ratio * self.fill_width()), int(_new_ratio * self.fill_width())
 
-    def _get_horizontal_fill(
-        self, _start: int, _end: int, _incr: int
-    ) -> Tuple[int, int, int]:
+    def _get_horizontal_fill(self, _start: int, _end: int, _incr: int) -> Tuple[int, int, int]:
         if not self._invert_fill_direction():
             return _start, _end, _incr
 
@@ -156,13 +149,8 @@ class HorizontalProgressBar(ProgressBarBase):
 
         return base_offset - _start, base_offset - _end, _incr * -1
 
-    # pylint: disable=protected-access
-    def _get_vertical_fill(
-        self, _start: int, _end: int, _incr: int
-    ) -> Tuple[int, int, int]:
+    def _get_vertical_fill(self, _start: int, _end: int, _incr: int) -> Tuple[int, int, int]:
         return ProgressBarBase._get_vertical_fill(self, _start, _end, _incr)
-
-    # pylint: enable=protected-access
 
     def _invert_fill_direction(self) -> bool:
         return self._direction == HorizontalFillDirection.RIGHT_TO_LEFT

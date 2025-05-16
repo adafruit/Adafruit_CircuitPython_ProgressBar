@@ -5,10 +5,13 @@
 Basic progressbar example script
 adapted for use on MagTag.
 """
+
 import time
+
 import board
-import displayio
 import digitalio
+import displayio
+
 from adafruit_progressbar.progressbar import HorizontalProgressBar
 
 # use built in display (PyPortal, PyGamer, PyBadge, CLUE, etc.)

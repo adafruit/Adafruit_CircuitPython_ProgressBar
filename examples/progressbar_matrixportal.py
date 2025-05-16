@@ -7,24 +7,24 @@
 
 # HARDWARE
 import time
+
 import board
+
+# CONTROLS
+import digitalio
 
 # DISPLAY
 import displayio  # Main display library
 import framebufferio  # For showing things on the display
 import rgbmatrix  # For talking to matrices specifically
 
-# CONTROLS
-
-import digitalio
-
 from adafruit_progressbar.horizontalprogressbar import (
-    HorizontalProgressBar,
     HorizontalFillDirection,
+    HorizontalProgressBar,
 )
 from adafruit_progressbar.verticalprogressbar import (
-    VerticalProgressBar,
     VerticalFillDirection,
+    VerticalProgressBar,
 )
 
 # ############## DISPLAY SETUP ###############

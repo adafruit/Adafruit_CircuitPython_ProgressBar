@@ -8,8 +8,10 @@
 # You can do so automatically by using the "pip" utility.
 
 import time
+
 import board
 import displayio
+
 from adafruit_progressbar.horizontalprogressbar import HorizontalProgressBar
 from adafruit_progressbar.verticalprogressbar import VerticalProgressBar
 
@@ -42,7 +44,7 @@ current_progress = 0.0
 while True:
     # range end is exclusive so we need to use 1 bigger than max number that we want
     for current_progress in range(0, 101, 1):
-        print("Progress: {}%".format(current_progress))
+        print(f"Progress: {current_progress}%")
         progress_bar.value = current_progress
         vert_progress_bar.value = current_progress * 2
         time.sleep(0.01)

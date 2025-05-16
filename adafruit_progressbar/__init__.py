@@ -23,7 +23,7 @@ Implementation Notes
 
 # imports
 try:
-    from typing import Tuple, Union, List
+    from typing import List, Tuple, Union
 except ImportError:
     pass  # No harm if the module isn't located
 import displayio
@@ -65,7 +65,6 @@ class ProgressBarBase(displayio.TileGrid):
     :type value_range: Tuple[int, int] or Tuple[float, float]
     """
 
-    # pylint: disable=too-many-arguments, too-many-instance-attributes
     def __init__(
         self,
         position: Tuple[int, int],
@@ -85,9 +84,7 @@ class ProgressBarBase(displayio.TileGrid):
             raise ValueError("The width and the height must be greater than zero")
 
         if not value_range[0] <= value <= value_range[1]:
-            raise ValueError(
-                "The starting value must be within the range of minimum to maximum"
-            )
+            raise ValueError("The starting value must be within the range of minimum to maximum")
 
         _edge_size = 2 * margin_size + 2 * border_thickness
 
@@ -489,11 +486,9 @@ class ProgressBarBase(displayio.TileGrid):
 
         return (float(value) - self.minimum) / (self.maximum - self.minimum)
 
-    # pylint: disable=no-self-use
     def _get_value_sizes(self, _old_ratio: float, _new_ratio: float) -> Tuple[int, int]:
         return 0, 0
 
-    # pylint: disable=no-self-use
     def _get_max_fill_size(self) -> int:
         return 0
 
@@ -520,21 +515,15 @@ class ProgressBarBase(displayio.TileGrid):
     def _get_sizes_min_max(self) -> Tuple[int, int]:
         return 0, min(self.fill_width(), self.fill_height())
 
-    # pylint: disable=no-self-use
     def _invert_fill_direction(self) -> bool:
         return False
 
-    def _get_horizontal_fill(
-        self, _start: int, _end: int, _incr: int
-    ) -> Tuple[int, int, int]:
+    def _get_horizontal_fill(self, _start: int, _end: int, _incr: int) -> Tuple[int, int, int]:
         return 0, self.fill_width(), 1  # Subclass must return values
 
-    def _get_vertical_fill(
-        self, _start: int, _end: int, _incr: int
-    ) -> Tuple[int, int, int]:
+    def _get_vertical_fill(self, _start: int, _end: int, _incr: int) -> Tuple[int, int, int]:
         return 0, self.fill_height(), 1  # Subclass must return values
 
-    # pylint: disable=too-many-locals
     def _render(
         self,
         _old_value: Union[int, float],
@@ -556,15 +545,11 @@ class ProgressBarBase(displayio.TileGrid):
         """
 
         _prev_ratio, _new_ratio = self._get_ratios(_old_value, _new_value)
-        _old_value_size, _new_value_size = self._get_value_sizes(
-            _prev_ratio, _new_ratio
-        )
+        _old_value_size, _new_value_size = self._get_value_sizes(_prev_ratio, _new_ratio)
 
         # Adjusts for edge cases, such as 0-width non-zero value, or 100% width
         # non-maximum values
-        _new_value_size = self._adjust_size_for_range_limits(
-            _new_value_size, _new_value
-        )
+        _new_value_size = self._adjust_size_for_range_limits(_new_value_size, _new_value)
 
         # Default values for increasing value
         _color = 2
@@ -586,9 +571,7 @@ class ProgressBarBase(displayio.TileGrid):
         _render_offset = self.margin_size + self.border_thickness
 
         vert_start, vert_end, vert_incr = self._get_vertical_fill(_start, _end, _incr)
-        horiz_start, horiz_end, horiz_incr = self._get_horizontal_fill(
-            _start, _end, _incr
-        )
+        horiz_start, horiz_end, horiz_incr = self._get_horizontal_fill(_start, _end, _incr)
 
         vert_start += _render_offset
         vert_end += _render_offset
