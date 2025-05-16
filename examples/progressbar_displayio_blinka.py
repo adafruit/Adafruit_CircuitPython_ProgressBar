@@ -7,18 +7,20 @@
 # required libraries identifies in the `requirements.txt` file.
 # You can do so automatically by using the "pip" utility.
 
-import time
 import sys
+import time
+
 import displayio
 from blinka_displayio_pygamedisplay import PyGameDisplay
-from adafruit_progressbar.progressbar import ProgressBar
+
 from adafruit_progressbar.horizontalprogressbar import (
-    HorizontalProgressBar,
     HorizontalFillDirection,
+    HorizontalProgressBar,
 )
+from adafruit_progressbar.progressbar import ProgressBar
 from adafruit_progressbar.verticalprogressbar import (
-    VerticalProgressBar,
     VerticalFillDirection,
+    VerticalProgressBar,
 )
 
 display = PyGameDisplay(width=320, height=240, auto_refresh=False)

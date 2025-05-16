@@ -28,7 +28,6 @@ __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_ProgressBar.git"
 
 
-# pylint: disable=too-many-arguments, too-few-public-methods
 class ProgressBar(HorizontalProgressBar):
     """A dynamic progress bar widget.
 
@@ -53,7 +52,6 @@ class ProgressBar(HorizontalProgressBar):
     :type stroke: int
     """
 
-    # pylint: disable=invalid-name
     def __init__(
         self,
         x: int,
@@ -102,7 +100,4 @@ class ProgressBar(HorizontalProgressBar):
         :rtype: None
         """
 
-        # Disable pylint since the property "value" is defined in the
-        # base class "ProgressBarBase"
-        # pylint: disable=access-member-before-definition
         self.value = value

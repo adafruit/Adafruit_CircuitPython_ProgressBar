@@ -14,12 +14,14 @@ This example is and adaptation from the progressbar_displayio_blinka test
 """
 
 import time
+
 import adafruit_fancyled.adafruit_fancyled as fancy
 import displayio
 from blinka_displayio_pygamedisplay import PyGameDisplay
+
 from adafruit_progressbar.horizontalprogressbar import (
-    HorizontalProgressBar,
     HorizontalFillDirection,
+    HorizontalProgressBar,
 )
 
 display = PyGameDisplay(width=320, height=240, auto_refresh=False)
