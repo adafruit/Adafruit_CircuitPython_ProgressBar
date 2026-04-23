@@ -30,7 +30,7 @@ vertical_progress_bar = VerticalProgressBar(
 # Append progress_bar to the splash group
 splash.append(vertical_progress_bar)
 
-x = x * 2
+x *= 2
 # Create a second VerticalProgressBar object at (x+20, y)
 vertical_progress_bar2 = VerticalProgressBar(
     (x, y), (width, height), direction=VerticalFillDirection.BOTTOM_TO_TOP
